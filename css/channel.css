@@ -1,0 +1,54 @@
+/* styling for the header */
+.channel__heading {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* styling for the avatar */
+.channel__heading__avatar {
+  width: 64px;
+  height: 64px;
+  margin-right: 20px;
+}
+
+.channel__heading__avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Styling for the channel name and description */
+.channel__heading__info {
+  flex-grow: 1;
+}
+
+.channel__heading__name {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+}
+
+.channel__heading__description {
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Styling for the number of subscribers and videos */
+.channel__heading__counts {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.channel__heading__counts li {
+  margin-right: 20px;
+  font-size: 14px;
+}
+
+.channel__heading__counts li:last-child {
+  margin-right: 0;
+}
