@@ -75,23 +75,23 @@ foreach($data->data as $video)
 
 	switch ($selectedOption) {
 		case 'playbutton_black_grid':
-			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-playlist/images/playbutton_black.svg').'" />';
+			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-wp/images/playbutton_black.svg').'" />';
 			break;
 
 		case 'playbutton_white_grid':
-			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-playlist/images/playbutton_white.svg').'" />';
+			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-wp/images/playbutton_white.svg').'" />';
 			break;
 
 		case 'playbutton_fs1_grid':
-			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-playlist/images/playbutton_fs1.svg').'" />';
+			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-wp/images/playbutton_fs1.svg').'" />';
 			break;
 
 		case 'playbutton_fs1_2_grid':
-			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-playlist/images/playbutton_fs1_2.svg').'" />';
+			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-wp/images/playbutton_fs1_2.svg').'" />';
 			break;
 
 		default:
-			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-playlist/images/playbutton_white.svg').'" />';
+			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-wp/images/playbutton_white.svg').'" />';
 			break;
 	}
 

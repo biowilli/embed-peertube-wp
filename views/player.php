@@ -31,9 +31,6 @@
 	</div>
 <div>
 
-
-
-
 <script src="https://unpkg.com/@peertube/embed-api/build/player.min.js"></script>
 <script>
 
@@ -68,28 +65,28 @@
 	$peertube_playlist .= "];";
 
 	echo $peertube_playlist;
-	$logo_svg = plugins_url('embed-peertube-playlist/images/logo_black.svg');
+	$logo_svg = plugins_url('embed-peertube-wp/images/logo_black.svg');
 	$selectedOption = get_option('pl_playbutton_style_playlist');
 
 	switch ($selectedOption) {
 		case 'playbutton_black_playlist':
-			$logo_svg = plugins_url( 'embed-peertube-playlist/images/playbutton_black.svg');
+			$logo_svg = plugins_url( 'embed-peertube-wp/images/playbutton_black.svg');
 			break;
 	
 		case 'playbutton_white_playlist':
-			$logo_svg =  plugins_url( 'embed-peertube-playlist/images/playbutton_white.svg');
+			$logo_svg =  plugins_url( 'embed-peertube-wp/images/playbutton_white.svg');
 			break;
 	
 		case 'playbutton_fs1_playlist':
-			$logo_svg =  plugins_url( 'embed-peertube-playlist/images/playbutton_fs1.svg');
+			$logo_svg =  plugins_url( 'embed-peertube-wp/images/playbutton_fs1.svg');
 			break;
 	
 		case 'playbutton_fs1_2_playlist':
-			$logo_svg =  plugins_url( 'embed-peertube-playlist/images/playbutton_fs1_2.svg');
+			$logo_svg =  plugins_url( 'embed-peertube-wp/images/playbutton_fs1_2.svg');
 			break;
 	
 		default:
-			$logo_svg =  plugins_url( 'embed-peertube-playlist/images/playbutton_white.svg');
+			$logo_svg =  plugins_url( 'embed-peertube-wp/images/playbutton_white.svg');
 				break;
 		}
 

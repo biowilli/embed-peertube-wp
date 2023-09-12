@@ -8,9 +8,11 @@
 
 	$data = getPlaylist($playlistId); // Call the function to retrieve the playlist data
 
+
 	if (is_string($data)) {
 		echo $data; // Error occurred, display error message
 	} 
+
 	?> 
 <div class="control_view">
 	<div class="video_view">
@@ -87,23 +89,23 @@ foreach($data->data as $video)
 
 	switch ($selectedOption) {
 		case 'playbutton_black_grid':
-			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-playlist/images/playbutton_black.svg').'" />';
+			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-wp/images/playbutton_black.svg').'" />';
 			break;
 
 		case 'playbutton_white_grid':
-			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-playlist/images/playbutton_white.svg').'" />';
+			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-wp/images/playbutton_white.svg').'" />';
 			break;
 
 		case 'playbutton_fs1_grid':
-			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-playlist/images/playbutton_fs1.svg').'" />';
+			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-wp/images/playbutton_fs1.svg').'" />';
 			break;
 
 		case 'playbutton_fs1_2_grid':
-			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-playlist/images/playbutton_fs1_2.svg').'" />';
+			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-wp/images/playbutton_fs1_2.svg').'" />';
 			break;
 
 		default:
-			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-playlist/images/playbutton_white.svg').'" />';
+			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-wp/images/playbutton_white.svg').'" />';
 			break;
 	}
 
@@ -248,7 +250,7 @@ foreach($data->data as $video)
 
 </script>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-//<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 <div class="container_netflix">
   <p>Playlist</p>
 <div class="swiper-container">

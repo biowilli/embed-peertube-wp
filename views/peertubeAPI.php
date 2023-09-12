@@ -41,7 +41,6 @@ function getVideoChannelVideos($channelId) {
 	return $data;
 }
 
-
 function getPlaylist($playlistId) {
 	if (!is_numeric($playlistId) || is_null($playlistId)) {
 		return "Missing playlist ID!";
@@ -69,7 +68,7 @@ function getPlaylist($playlistId) {
 	$json = wp_remote_retrieve_body($response);
 
 	if (empty($json)) {
-		return "Error retrieving playlist from Peertube API on instance " . $peertube_url . " (you can change this in the Embed Peertube settings)";
+		return "Error retrieving playlist from Peertube API on instance " . $peertube_url . " (you can change this in the Embed Peertube settings)3";
 	}
 
 	$data = json_decode($json);
@@ -82,7 +81,7 @@ function getPlaylist($playlistId) {
 		$error_msg =
 			"Error retrieving playlist from Peertube API on instance " .
 			$peertube_url .
-			" (you can change this in the Peertube Playlist settings)<br />";
+			" (you can change this in the Peertube Playlist settings)4<br />";
 		
 		if (!empty($data->error)) {
 			$error_msg .= "API error: " . $data->error . "<br />";

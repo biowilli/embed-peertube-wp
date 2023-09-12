@@ -20,7 +20,10 @@
 	<?php wp_nonce_field( 'new_ch_peertube' ) ?>
 	<b>Add a new channel</b><br />
 	<label>Channel ID: </label><input type="text" name="channel_id" /> You can find it in the URL of the channel: https://fair.tube/c/<strong style="color: #00fc00">channelname</strong>/videos<br />
-	<input type="hidden" name="template" value="1">
+	<select name="template">
+		<option value="0">Grid</option>
+		<option value="1">List</option>
+	</select>
 	<input type="submit" value="Add" />
 </form>
 
@@ -32,7 +35,6 @@ if(sizeof($channels) > 0)
 {
 	foreach($channels as $channel)
 	{
-
 		echo '<div class="playlist_pt">';
 		echo '<h3>'.$channel->channel_id.'</h3></br>';
 		echo '<form action="" method="post">';
@@ -40,8 +42,19 @@ if(sizeof($channels) > 0)
 		echo '<label>Channel ID : </label>';
 		echo '<input type="text" name="channel_id" value="'.$channel->channel_id.'" /><br />';
 		echo '<input type="hidden" name="id" value="'.$channel->id.'" /><br />';
-		echo '<input type="hidden" name="template" value="1">';
-		echo '<input type="image" src="'.plugins_url( 'embed-peertube-playlist/images/save.png').'" title"Save" /> <img title="Remove this channel" class="remove action" rel="'.$channel->id.'" src="'.plugins_url( 'embed-peertube-playlist/images/remove.png' ).'" />
+		echo '<select name="template">';
+		echo '<option value="0"';
+		if ($channel->template === "0") {
+			echo ' selected';
+		}
+		echo '>Grid</option>';
+		echo '<option value="1"';
+		if ($channel->template === "1") {
+			echo ' selected';
+		}
+		echo '>List</option>';
+		echo '</select>';
+		echo '<input type="image" src="'.plugins_url( 'embed-peertube-wp/images/save.png').'" title"Save" /> <img title="Remove this channel" class="remove action" rel="'.$channel->id.'" src="'.plugins_url( 'embed-peertube-wp/images/remove.png' ).'" />
 		Shortcode : <input type="text" value="[channel_peertube id='.$channel->id.']" onClick="this.select();" />
 		</form></div>';
 	}

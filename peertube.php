@@ -1,14 +1,14 @@
 <?php
 
 /*
-Plugin Name: Embed-Peertube
+Plugin Name: Embed-Peertube-Wp
 Plugin URI: 
 Version: 2.00
-Description: Display Peertube Playlists and Channels
+Description: Display Peertube Playlists and Channels in WP
 Author: Monz Philipp
 Author URI: https://www.fairkom.com/en/shop
 Network: false
-Text Domain: embed-peertube
+Text Domain: embed-peertube-wp
 Domain Path: 
 */
 
@@ -48,13 +48,8 @@ function add_peertube_install()
 			id int(11) NOT NULL AUTO_INCREMENT,
 			name varchar(50) NOT NULL,
 			playlist_id varchar(50) NOT NULL,
-			show_title int(1) NOT NULL,
-			show_description int(1) NOT NULL,
 			template int(11) NOT NULL,
-			text_size int(3) NOT NULL,
-			text_color varchar(20) NOT NULL,
-			desc_text_color varchar(20) NOT NULL,
-			bg_color varchar(20) NOT NULL,
+            show_title int(1) NOT NULL,           
 			PRIMARY KEY  (id)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 	";
@@ -243,9 +238,7 @@ function channels_peertube()
             //If the name or channel ID fields are empty
             if (empty($_POST["channel_id"])) {
                 echo "<h2>You must enter the ID of the Peertube channel!</h2>";
-            }
-            //If this is a new channel
-            elseif (!isset($_POST["id"])) {
+            } elseif (!isset($_POST["id"])) {
                 $channel_id = $_POST["channel_id"];
 
                 //Nonce verification
@@ -259,9 +252,7 @@ function channels_peertube()
                     $channel_id
                 );
                 $wpdb->query($query);
-            }
-            //If this is an update to an existing playlist
-            else {
+            } else {
                 $channel_id = $_POST["channel_id"];
                 //Nonce verification
                 check_admin_referer("update_ch_peertube_" . $_POST["id"]);
@@ -293,64 +284,44 @@ function playlists_peertube()
 
         //Table to store the playlist data
         $playlist_peertube_table = $wpdb->prefix . "playlists_peertube";
-
         //If the form has been submitted
         if (sizeof($_POST) > 0) {
             //If the name or playlist ID fields are empty
             if (empty($_POST["name"]) || empty($_POST["playlist_id"])) {
                 echo "<h2>You must enter a name and the ID of the Peertube playlist!</h2>";
-            }
-            //If the text size input isn't a number
-            elseif (!is_numeric($_POST["text_size"])) {
-                echo "<h2>Text size must be a number</h2>";
-            }
-            //If this is a new playlist
-            elseif (!isset($_POST["id"])) {
+            } elseif (!isset($_POST["id"])) {
                 $playlist_id = $_POST["playlist_id"];
                 //Nonce verification
                 check_admin_referer("new_pl_peertube");
-                $show_title = 1;
-                $show_description = isset($_POST["show_description"]) ? 1 : 0;
-                $desc_text_color = "#ffffff";
-                $bg_color = "rgba(0, 0, 0, 0.7)";
-
                 //Insert the new playlist data into the database
                 $query = $wpdb->prepare(
                     "INSERT INTO " .
                         $playlist_peertube_table .
-                        " (`name`, `playlist_id`, `template`, `text_size`, `text_color`, `desc_text_color`, `bg_color`, `show_title`, `show_description`) VALUES (%s, %s, %d, %d, %s, %s, %s, %d, %d)",
+                        " (`name`, `playlist_id`, `template`, `show_title` ) VALUES (%s, %s, %d, %d)",
                     sanitize_text_field($_POST["name"]),
                     $_POST["playlist_id"],
-                    "grid",
-                    (int) $_POST["text_size"],
-                    sanitize_hex_color($_POST["text_color"]),
-                    $desc_text_color,
-                    $bg_color,
-                    $show_title,
-                    $show_description
+                    (int) $_POST["template"],        
+                    (int) $_POST["show_title"]
                 );
                 $wpdb->query($query);
-            }
-            //If this is an update to an existing playlist
-            else {
+                
+            } else {
                 $playlist_id = $_POST["playlist_id"];
+                $template = $_POST["template"];
+                $show_title = $_POST["show_title"];
+
                 //Nonce verification
                 check_admin_referer("update_pl_peertube_" . $_POST["id"]);
-                $show_title = isset($_POST["show_title"]) ? 1 : 0;
-                $show_description = isset($_POST["show_description"]) ? 1 : 0;
                 $query = $wpdb->prepare(
                     "UPDATE " .
-                        $playlist_peertube_table .
-                        " SET `name` = %s, `playlist_id` = %s, `template` = %d, `text_size` = %d, `text_color` = %s, `show_description` = %d WHERE id = %d",
+                    $playlist_peertube_table .
+                    " SET `name` = %s, `playlist_id` = %s, `template` = %d, `show_title` = %d WHERE id = %d",
                     sanitize_text_field($_POST["name"]),
                     $playlist_id,
-                    "grid",
-                    (int) $_POST["text_size"],
-                    sanitize_hex_color($_POST["text_color"]),
-                    $show_description,
-                    (int) $_POST["id"]
+                    $template,
+                    $show_title,
+                    $_POST["id"]
                 );
-                
                 $wpdb->query($query);
             }
         }
@@ -595,7 +566,7 @@ function display_playlist_peertube($atts)
             } else {
                 return "Error retrieving playlist from Peertube API on instance " .
                     $peertube_url .
-                    " (you can change this in the Peertube Playlist settings)";
+                    " (you can change this in the Peertube Playlist settings)2";
             }
         } else {
             return "Error: Peertube playlist ID " . $atts["id"] . " not found!";
