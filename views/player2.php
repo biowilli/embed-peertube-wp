@@ -1,19 +1,72 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
-
 <?php
 	require_once('peertubeAPI.php'); // Include the peertubeAPI.php file
-	$playlistId = $_GET['playlistId'];
+	//request für playlist in die Datenbank erst hier was fehlt?
+
+	abstract class VIDEOLOCATION {
+		const SAMEPAGE = "0";
+		const SEPERATE = "1";
+	}
+
+	abstract class PLAYLISTTEMPLATE {
+		const GRID = "0";
+		const SLIDER = "1";
+	}
+	$show_player = false;
+	$playlistId = $playlist->id; //check if u get playlistId from here
+
+	if ($playlistId === null) {
+		$playlistId = $_GET['playlistId'];	
+
+		if ($playlistId) {
+
+			global $wpdb;
+
+			$playlist_peertube_table = $wpdb->prefix . "playlists_peertube";
+
+			$query = $wpdb->prepare(
+				"SELECT * FROM {$playlist_peertube_table} WHERE id = %d",
+				$playlistId
+			);
+			$playlist = $wpdb->get_row($query);
+			$show_player = true;
+	} 
+}
 
 	$peertube_url = get_option("pl_peertube_url");
-
 	$data = getPlaylist($playlistId); // Call the function to retrieve the playlist data
-
 
 	if (is_string($data)) {
 		echo $data; // Error occurred, display error message
 	} 
 
+	//Style Grid
+	$pl_hover_delay = get_option('pl_hover_delay');
+
+	$grid_backgroundcolor = get_option("pl_grid_backgroundcolor"); 
+	$grid_textcolor = get_option("pl_grid_textcolor"); 
+	$grid_textsize_header = get_option("pl_grid_textsize_header"); 
+	$grid_textsize_description = get_option("pl_grid_textsize_description"); 
+
+	$marginTopVideo = get_option("pl_grid_margin_top"); 
+	$marginBottomVideo = get_option("pl_grid_margin_bottom"); 
+	$marginRightVideo = get_option("pl_grid_margin_right"); 
+	$marginLeftVideo = get_option("pl_grid_margin_left"); 
+
+	$grid_borderradius_top_left = get_option('pl_grid_borderradius_top_left');
+	$grid_borderradius_top_right = get_option('pl_grid_borderradius_top_right');
+	$grid_borderradius_bottom_left = get_option('pl_grid_borderradius_bottom_left');
+	$grid_borderradius_bottom_right = get_option('pl_grid_borderradius_bottom_right');
+
+	$hover_grid_borderradius_top_left = get_option('pl_hover_grid_borderradius_top_left');
+	$hover_grid_borderradius_top_right = get_option('pl_hover_grid_borderradius_top_right');
+	$hover_grid_borderradius_bottom_left = get_option('pl_hover_grid_borderradius_bottom_left');
+	$hover_grid_borderradius_bottom_right = get_option('pl_hover_grid_borderradius_bottom_right');
 	?> 
+
+<?php
+if ($playlist->click === VIDEOLOCATION::SAMEPAGE || $show_player) {
+?>
 <div class="control_view">
 	<div class="video_view">
 		<div class="video_background">
@@ -26,32 +79,26 @@
 			<p id="description_container"> </p>
 		</div>
 	</div>
+<div>
+	<?php }?>
+<script>
+	function playVideoInSeperatePage(uuid){
+		var siteUrl = '<?php echo site_url(); ?>';
+            // Redirect to the separate page with the video URL as a parameter
+            window.location.href = siteUrl + '/index.php/playlist/?uuid=' + encodeURIComponent(uuid)+ '&playlistId=' + encodeURIComponent(<?= $playlist->id  ?>) ;
+	}
+</script>
+	<?php
+	
+if ($playlist->template === PLAYLISTTEMPLATE::GRID) {
+	if ($playlist->show_title) {
+		echo "<p>".$playlist->name."<p>";
+		echo "<br>";
+	  } }?>
 
 	<div class="playlist_peertube_grid" id="playlist_peertube_grid_<?= $playlistId ?>">	
 <?php
-
-//Style Grid
-$pl_hover_delay = get_option('pl_hover_delay');
-
-$grid_backgroundcolor = get_option("pl_grid_backgroundcolor"); 
-$grid_textcolor = get_option("pl_grid_textcolor"); 
-$grid_textsize_header = get_option("pl_grid_textsize_header"); 
-$grid_textsize_description = get_option("pl_grid_textsize_description"); 
-
-$marginTopVideo = get_option("pl_grid_margin_top"); 
-$marginBottomVideo = get_option("pl_grid_margin_bottom"); 
-$marginRightVideo = get_option("pl_grid_margin_right"); 
-$marginLeftVideo = get_option("pl_grid_margin_left"); 
-
-$grid_borderradius_top_left = get_option('pl_grid_borderradius_top_left');
-$grid_borderradius_top_right = get_option('pl_grid_borderradius_top_right');
-$grid_borderradius_bottom_left = get_option('pl_grid_borderradius_bottom_left');
-$grid_borderradius_bottom_right = get_option('pl_grid_borderradius_bottom_right');
-
-$hover_grid_borderradius_top_left = get_option('pl_hover_grid_borderradius_top_left');
-$hover_grid_borderradius_top_right = get_option('pl_hover_grid_borderradius_top_right');
-$hover_grid_borderradius_bottom_left = get_option('pl_hover_grid_borderradius_bottom_left');
-$hover_grid_borderradius_bottom_right = get_option('pl_hover_grid_borderradius_bottom_right');
+if ($playlist->template === "0") {
 
 foreach($data->data as $video)
 {
@@ -81,7 +128,13 @@ foreach($data->data as $video)
     echo 'border-bottom-left-radius: ' . $hover_grid_borderradius_bottom_left . 'px; ';
     echo 'border-bottom-right-radius: ' . $hover_grid_borderradius_bottom_right . 'px; ';
 	echo '"';
-	echo 'onClick="playVideo(\'' . $video->video->uuid . '\')"'; // onClick-Event
+	if ($playlist->click === VIDEOLOCATION::SAMEPAGE || $show_player){
+		echo 'onClick="playVideo(\'' . $video->video->uuid . '\')"';
+	}
+
+	if ($playlist->click === VIDEOLOCATION::SEPERATE && !$show_player){
+		echo 'onClick="playVideoInSeperatePage(\'' . $video->video->uuid . '\')"';
+	}
 	echo '>';
 	echo '<div class="thumbnail_container">';
 	echo '<img class="thumbnail" src="'.$peertube_url.$video->video->previewPath.'" />';
@@ -138,14 +191,9 @@ foreach($data->data as $video)
     echo '</div>'; // Close video_container
     echo '</div>'; // Close video
 }
-
+}
 ?>
 </div>
-	<div class="playlist_view" id="playlist_view">
-		<ul class="playlist_container" id="playlist_container">
-		</ul>
-	</div>
-<div>
 
 <script src="https://unpkg.com/@peertube/embed-api/build/player.min.js"></script>
 <script>
@@ -247,24 +295,28 @@ foreach($data->data as $video)
 		var targetUuid = "<?php echo $_GET['uuid']; ?>";
 		playVideo(targetUuid);
     });
-
 </script>
+
+<?php 
+if ($playlist->template === PLAYLISTTEMPLATE::SLIDER) {
+	?>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
-<div class="container_netflix">
-  <p>Playlist</p>
+<div class="container_silder">
+  <p><?php 
+  if ($playlist->show_title) {
+	echo $playlist->name; 
+  }
+ ?></p>
 <div class="swiper-container">
   <div class="swiper-wrapper">
-	<?php
-
-
+	<?php 
 	foreach($data->data as $video)
-{
+	{
 	//deleted or private video
 	if (is_null($video) || is_null($video->video) || is_null($video->video->name)){
 		continue;
 	}
-
 	echo '<div class="swiper-slide" id="swiper-slide">';
 	echo '<div class="swiper-box">';
 	echo '<div class="video" style="';
@@ -287,7 +339,14 @@ foreach($data->data as $video)
     echo 'border-bottom-left-radius: ' . $hover_grid_borderradius_bottom_left . 'px; ';
     echo 'border-bottom-right-radius: ' . $hover_grid_borderradius_bottom_right . 'px; ';
 	echo '"';
-	echo 'onClick="playVideo(\'' . $video->video->uuid . '\')"'; // onClick-Event
+	if ($playlist->click === VIDEOLOCATION::SAMEPAGE || $show_player){
+		echo 'onClick="playVideo(\'' . $video->video->uuid . '\')"';
+	}
+
+	if ($playlist->click === VIDEOLOCATION::SEPERATE && !$show_player){
+		echo 'onClick="playVideoInSeperatePage(\'' . $video->video->uuid . '\')"';
+	}
+
 	echo '>';
 	echo '<div class="thumbnail_container">';
 
@@ -321,18 +380,14 @@ foreach($data->data as $video)
 	echo '</div>';
 }?>
 </div>
-
 </div>
-
 </div>
-
-
   <script>
 	const swiper = new Swiper(".swiper-container", {
 	slidesPerView: 2,
 	slidesPerGroup: 1,
-	centeredSlides: true,
-	loop: true,
+	centeredSlides: false,
+	loop: false,
 	navigation: {
 			nextEl: '.swiper-button-next',
 			prevEl: '.swiper-button-prev',
@@ -379,7 +434,5 @@ foreach($data->data as $video)
 		}
 	}
 	});
-
 </script>
-
-
+<?php }?>

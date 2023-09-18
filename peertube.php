@@ -48,6 +48,7 @@ function add_peertube_install()
 			id int(11) NOT NULL AUTO_INCREMENT,
 			name varchar(50) NOT NULL,
 			playlist_id varchar(50) NOT NULL,
+            click int(1) NOT NULL,     
 			template int(11) NOT NULL,
             show_title int(1) NOT NULL,           
 			PRIMARY KEY  (id)
@@ -297,9 +298,10 @@ function playlists_peertube()
                 $query = $wpdb->prepare(
                     "INSERT INTO " .
                         $playlist_peertube_table .
-                        " (`name`, `playlist_id`, `template`, `show_title` ) VALUES (%s, %s, %d, %d)",
+                        " (`name`, `playlist_id`, `click`, `template`, `show_title` ) VALUES (%s, %s, %d, %d, %d)",
                     sanitize_text_field($_POST["name"]),
                     $_POST["playlist_id"],
+                    (int) $_POST["click"],      
                     (int) $_POST["template"],        
                     (int) $_POST["show_title"]
                 );
@@ -307,6 +309,7 @@ function playlists_peertube()
                 
             } else {
                 $playlist_id = $_POST["playlist_id"];
+                $click = $_POST["click"];
                 $template = $_POST["template"];
                 $show_title = $_POST["show_title"];
 
@@ -315,9 +318,10 @@ function playlists_peertube()
                 $query = $wpdb->prepare(
                     "UPDATE " .
                     $playlist_peertube_table .
-                    " SET `name` = %s, `playlist_id` = %s, `template` = %d, `show_title` = %d WHERE id = %d",
+                    " SET `name` = %s, `playlist_id` = %s, `click` = %d,  `template` = %d, `show_title` = %d WHERE id = %d",
                     sanitize_text_field($_POST["name"]),
                     $playlist_id,
+                    $click,
                     $template,
                     $show_title,
                     $_POST["id"]
@@ -394,23 +398,186 @@ function remove_channel_peertube_callback()
     }
 }
 
-// Shortcode to display a Peertube playlist
-add_shortcode("player_peertube", "display_player_peertube");
-function display_player_peertube()
+// Shortcode to display a Peertube playlist Player
+add_shortcode("player_peertube", "display_player_peertube2");
+function display_player_peertube2($atts) 
 {
-
-    wp_enqueue_style(
-        "player_peertube_grid_css",
-        plugins_url("css/playerGrid.css", __FILE__)
-    );
+    $peertube_url = get_option("pl_peertube_url");
+    wp_enqueue_style("player_peertube_grid_css", plugins_url("css/playerGrid.css", __FILE__));
 
     // Load channel view file and render HTML
     $view = plugin_dir_path(__FILE__) . "views/player2.php";
     ob_start();
     include $view;
     $player_html = ob_get_clean();
-    
+                
     return $player_html;
+}
+
+
+
+add_shortcode("playlist_player_peertube", "display_player_peertube");
+function display_player_peertube($atts) 
+{
+    $peertube_url = get_option("pl_peertube_url");
+
+    // Check if the Peertube instance URL is set
+    if (empty($peertube_url)) {
+        return '<strong>You need to set your Peertube instance url in the <a href="' .
+            admin_url("admin.php?page=playlist-pt-settings") .
+            '">settings</a> to use Peertube Playlist</strong>';
+    }
+
+    if (is_numeric($atts["id"])) {
+        global $wpdb;
+        $playlist_peertube_table = $wpdb->prefix . "playlists_peertube";
+        $query = $wpdb->prepare(
+            "SELECT * FROM {$playlist_peertube_table} WHERE id = %d",
+            $atts["id"]
+        );
+        $playlist = $wpdb->get_row($query);
+
+        if ($playlist) {
+            wp_enqueue_script("jquery");
+            $apiURL = "/api/v1";
+            $url =
+                $peertube_url .
+                $apiURL .
+                "/video-playlists/" .
+                $playlist->playlist_id .
+                "/videos";
+            $response = wp_remote_get($url);
+            $json = wp_remote_retrieve_body($response);
+
+            if (!empty($json)) {
+                $data = json_decode($json);
+
+                if ($data) {
+                    if (!isset($data->error) && !isset($data->errors)) {
+                        wp_enqueue_style(
+                            "player_peertube_grid_css",
+                            plugins_url("css/playerGrid.css", __FILE__)
+                        );
+
+                // Load channel view file and render HTML
+                $view = plugin_dir_path(__FILE__) . "views/player2.php";
+                ob_start();
+                include $view;
+                $player_html = ob_get_clean();
+                
+                return $player_html;
+
+                
+                    } else {
+                        $error_msg =
+                            "Error retrieving playlist from Peertube API on instance " .
+                            $peertube_url .
+                            " (you can change this in the Peertube Playlist settings)<br />";
+                        if (!empty($data->error)) {
+                            $error_msg .=
+                                "API error: " . $data->error . "<br />";
+                        } else {
+                            $error_msg .=
+                                "API errors: " .
+                                print_r($data->errors, true) .
+                                "<br />";
+                        }
+                        return $error_msg;
+                    }
+                } else {
+                    return "Error converting JSON data";
+                }
+            } else {
+                return "Error retrieving playlist from Peertube API on instance " .
+                    $peertube_url .
+                    " (you can change this in the Peertube Playlist settings)2";
+            }
+        } else {
+            return "Error: Peertube playlist ID " . $atts["id"] . " not found!";
+        }
+    } else {
+        return "Missing playlist ID!";
+    }
+}
+
+// Shortcode to display a Peertube playlist
+add_shortcode("playlist_peertube", "display_playlist_peertube");
+function display_playlist_peertube($atts)
+{
+    $peertube_url = get_option("pl_peertube_url");
+
+    // Check if the Peertube instance URL is set
+    if (empty($peertube_url)) {
+        return '<strong>You need to set your Peertube instance url in the <a href="' .
+            admin_url("admin.php?page=playlist-pt-settings") .
+            '">settings</a> to use Peertube Playlist</strong>';
+    }
+    if (is_numeric($atts["id"])) {
+        global $wpdb;
+        $playlist_peertube_table = $wpdb->prefix . "playlists_peertube";
+        $query = $wpdb->prepare(
+            "SELECT * FROM {$playlist_peertube_table} WHERE id = %d",
+            $atts["id"]
+        );
+        $playlist = $wpdb->get_row($query);
+    
+
+        if ($playlist) {
+            wp_enqueue_script("jquery");
+            $apiURL = "/api/v1";
+            $url =
+                $peertube_url .
+                $apiURL .
+                "/video-playlists/" .
+                $playlist->playlist_id .
+                "/videos";
+            $response = wp_remote_get($url);
+            $json = wp_remote_retrieve_body($response);
+
+            if (!empty($json)) {
+                $data = json_decode($json);
+
+                if ($data) {
+                    if (!isset($data->error) && !isset($data->errors)) {
+                        wp_enqueue_style(
+                            "playlist_peertube_grid_css",
+                            plugins_url("css/grid.css", __FILE__)
+                        );
+                        $view = plugin_dir_path(__FILE__) . "views/grid.php";
+                        ob_start();
+                        include $view;
+                        $playlist_html = ob_get_clean();
+                        return $playlist_html;
+                    } else {
+                        $error_msg =
+                            "Error retrieving playlist from Peertube API on instance " .
+                            $peertube_url .
+                            " (you can change this in the Peertube Playlist settings)<br />";
+                        if (!empty($data->error)) {
+                            $error_msg .=
+                                "API error: " . $data->error . "<br />";
+                        } else {
+                            $error_msg .=
+                                "API errors: " .
+                                print_r($data->errors, true) .
+                                "<br />";
+                        }
+                        return $error_msg;
+                    }
+                } else {
+                    return "Error converting JSON data";
+                }
+            } else {
+                return "Error retrieving playlist from Peertube API on instance " .
+                    $peertube_url .
+                    " (you can change this in the Peertube Playlist settings)2";
+            }
+        } else {
+            return "Error: Peertube playlist ID " . $atts["id"] . " not found!";
+        }
+    } else {
+        return "Missing playlist ID!";
+    }
 }
 
 // Shortcode to display a Peertube playlist
@@ -494,85 +661,6 @@ function display_channel_peertube($atts)
         }
     } else {
         return "Missing channel ID!";
-    }
-}
-
-// Shortcode to display a Peertube playlist
-add_shortcode("playlist_peertube", "display_playlist_peertube");
-function display_playlist_peertube($atts)
-{
-    $peertube_url = get_option("pl_peertube_url");
-
-    // Check if the Peertube instance URL is set
-    if (empty($peertube_url)) {
-        return '<strong>You need to set your Peertube instance url in the <a href="' .
-            admin_url("admin.php?page=playlist-pt-settings") .
-            '">settings</a> to use Peertube Playlist</strong>';
-    }
-    if (is_numeric($atts["id"])) {
-        global $wpdb;
-        $playlist_peertube_table = $wpdb->prefix . "playlists_peertube";
-        $query = $wpdb->prepare(
-            "SELECT * FROM {$playlist_peertube_table} WHERE id = %d",
-            $atts["id"]
-        );
-        $playlist = $wpdb->get_row($query);
-
-        if ($playlist) {
-            wp_enqueue_script("jquery");
-            $apiURL = "/api/v1";
-            $url =
-                $peertube_url .
-                $apiURL .
-                "/video-playlists/" .
-                $playlist->playlist_id .
-                "/videos";
-            $response = wp_remote_get($url);
-            $json = wp_remote_retrieve_body($response);
-
-            if (!empty($json)) {
-                $data = json_decode($json);
-
-                if ($data) {
-                    if (!isset($data->error) && !isset($data->errors)) {
-                        wp_enqueue_style(
-                            "playlist_peertube_grid_css",
-                            plugins_url("css/grid.css", __FILE__)
-                        );
-                        $view = plugin_dir_path(__FILE__) . "views/grid.php";
-                        ob_start();
-                        include $view;
-                        $playlist_html = ob_get_clean();
-                        return $playlist_html;
-                    } else {
-                        $error_msg =
-                            "Error retrieving playlist from Peertube API on instance " .
-                            $peertube_url .
-                            " (you can change this in the Peertube Playlist settings)<br />";
-                        if (!empty($data->error)) {
-                            $error_msg .=
-                                "API error: " . $data->error . "<br />";
-                        } else {
-                            $error_msg .=
-                                "API errors: " .
-                                print_r($data->errors, true) .
-                                "<br />";
-                        }
-                        return $error_msg;
-                    }
-                } else {
-                    return "Error converting JSON data";
-                }
-            } else {
-                return "Error retrieving playlist from Peertube API on instance " .
-                    $peertube_url .
-                    " (you can change this in the Peertube Playlist settings)2";
-            }
-        } else {
-            return "Error: Peertube playlist ID " . $atts["id"] . " not found!";
-        }
-    } else {
-        return "Missing playlist ID!";
     }
 }
 

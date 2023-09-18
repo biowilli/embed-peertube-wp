@@ -20,10 +20,16 @@
 	<?php wp_nonce_field( 'new_ch_peertube' ) ?>
 	<b>Add a new channel</b><br />
 	<label>Channel ID: </label><input type="text" name="channel_id" /> You can find it in the URL of the channel: https://fair.tube/c/<strong style="color: #00fc00">channelname</strong>/videos<br />
-	<select name="template">
-		<option value="0">Grid</option>
-		<option value="1">List</option>
-	</select>
+	<label for="playlist_peertube_sd">Show Title:</label><br />
+	<input type="checkbox" name="show_title" value="1" id="playlist_peertube_sd" checked /><br />
+	<label for="playlist_peertube_sd">Show Description:</label><br />
+	<input type="checkbox" name="show_description" value="1" id="playlist_peertube_sd" checked /><br />
+	<label for="playlist_peertube_sd">Show Picture:</label><br />
+	<input type="checkbox" name="show_picture" value="1" id="playlist_peertube_sd" checked /><br />
+	<label for="playlist_peertube_sd">Show Videos:</label><br />
+	<input type="checkbox" name="show_videos" value="1" id="playlist_peertube_sd" checked /><br />
+	<label for="playlist_peertube_sd">Show Playlists:</label><br />
+	<input type="checkbox" name="show_playlists" value="1" id="playlist_peertube_sd" checked /><br />
 	<input type="submit" value="Add" />
 </form>
 
@@ -42,18 +48,12 @@ if(sizeof($channels) > 0)
 		echo '<label>Channel ID : </label>';
 		echo '<input type="text" name="channel_id" value="'.$channel->channel_id.'" /><br />';
 		echo '<input type="hidden" name="id" value="'.$channel->id.'" /><br />';
-		echo '<select name="template">';
-		echo '<option value="0"';
-		if ($channel->template === "0") {
-			echo ' selected';
-		}
-		echo '>Grid</option>';
-		echo '<option value="1"';
-		if ($channel->template === "1") {
-			echo ' selected';
-		}
-		echo '>List</option>';
-		echo '</select>';
+		echo '<label for="playlist_peertube_sd">Show Title:</label><br />';
+		echo '<input type="checkbox" name="show_title" value="1" id="playlist_peertube_sd" checked /><br />';
+		echo '<label for="playlist_peertube_sd">Show Description:</label><br />';
+		echo '<input type="checkbox" name="show_description" value="1" id="playlist_peertube_sd" checked /><br />';
+		echo '<label for="playlist_peertube_sd">Show Picture:</label><br />';
+		echo '<input type="checkbox" name="show_pictture value="1" id="playlist_peertube_sd" checked /><br />';
 		echo '<input type="image" src="'.plugins_url( 'embed-peertube-wp/images/save.png').'" title"Save" /> <img title="Remove this channel" class="remove action" rel="'.$channel->id.'" src="'.plugins_url( 'embed-peertube-wp/images/remove.png' ).'" />
 		Shortcode : <input type="text" value="[channel_peertube id='.$channel->id.']" onClick="this.select();" />
 		</form></div>';

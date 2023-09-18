@@ -1,5 +1,4 @@
-
-<?php if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly ?>
+<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <script>
 
 		jQuery(document).ready(function(){
@@ -14,25 +13,33 @@
 		});
 
 </script>
-
 <h2>All Peertube Playlists</h2>
 <form action="" method="post" id="form_new_pl_pt">
 <?php wp_nonce_field( 'new_pl_peertube' ) ?>
 <b>Add a new playlist</b><br />
 	<label>Name: </label><input type="text" name="name" /><br />
-	<label>Playlist ID: </label><input type="text" name="playlist_id" /> You find it in the URL of the playlist: https://fair.tube/w/p/<strong style="color: #00fc00">kwnt5xET6s1kijp6fUwHLh</strong><br />
-	<label>Playlist Ansicht: </label>
+	<label>Playlist ID: </label><input type="text" name="playlist_id" /> You find the Playlist ID in the URL of the playlist: (marked in color)<br/> 
+	https://fair.tube/w/p/<strong style="color: blue">kwnt5xET6s1kijp6fUwHLh</strong><br />
+	https://test-vod.fs1.tv/w/p/<strong style="color: blue">dkgzqvmdVW56FCninVMdHM</strong><br />
+	https://displayeurope.video/w/p/<strong style="color: blue">afdzsvsfVF56FSsisDxDHQ</strong><br />
+	<br />
+	<label>Playlist View: </label>
+	<br />
 	<select name="template">
 		<option value="0">Grid</option>
-		<option value="1">List</option>
+		<option value="1">Grid Slider</option>
 	</select>
+	<br />
 	<label>Playlist Video Click: </label>
+	<br />
 	<select name="click">
 		<option value="0">Video above </option>
-		<option value="1">Video in seperate Page (needs Sendungsseitepage)</option>
+		<option value="1">Video in seperate Page (needs /watch page [player_peertube] added there)</option>
 	</select>
-	<input type="text" name="playlist_id" />
-	<label for="playlist_peertube_sd">Show Title:</label><input type="checkbox" name="show_title" value="1" id="playlist_peertube_sd" checked /><br />
+	<br />
+	<label for="playlist_peertube_sd">Show Title:</label>
+	<br />
+	<input type="checkbox" name="show_title" value="1" id="playlist_peertube_sd" checked /><br />
 	<input type="submit" value="Add" />
 </form>
 
@@ -50,6 +57,21 @@ if(sizeof($playlists) > 0)
 		echo '<label>Name : </label><input type="text" name="name" value="'.$playlist->name.'" /><input type="hidden" name="id" value="'.$playlist->id.'" /><br />';
 		echo '<label>Playlist ID : </label>';
 		echo '<input type="text" name="playlist_id" value="'.$playlist->playlist_id.'" /><br />';
+
+		echo '<label>Playlist Video Click: </label>';
+		echo '<select name="click">';
+		echo '<option value="0"';
+		if ($playlist->click === "0") {
+			echo ' selected';
+		}
+		echo '>Video above</option>';
+		echo '<option value="1"';
+		if ($playlist->click === "1") {
+			echo ' selected';
+		}
+		echo '>Video in seperate Page</option>';
+		echo '</select>';
+
 		echo '<label>Playlist Ansicht:  </label>';
 		echo '<select name="template">';
 		echo '<option value="0"';
@@ -61,23 +83,19 @@ if(sizeof($playlists) > 0)
 		if ($playlist->template === "1") {
 			echo ' selected';
 		}
-		echo '<label>Playlist Video Click: </label>';
-		echo '<select name="template">';
-		echo '<option value="0"';
-		if ($playlist->template === "0") {
-			echo ' selected';
-		}
-		echo '>Grid</option>';
-		echo '<option value="1"';
-		if ($playlist->template === "1") {
-			echo ' selected';
-		}
-		echo '>List</option>';
+		echo '>Grid Slider</option>';
 		echo '</select>';
-		echo '<label for="playlist_peertube_sd">Show Title:</label><input type="checkbox" name="show_title" value="1" id="playlist_peertube_sd" '.($playlist->show_description == 1 ? 'checked' : '').' /><br />';
-	echo '<input type="image" src="'.plugins_url( 'embed-peertube-wp/images/save.png').'" title"Save" /> <img title="Remove this playlist" class="remove action" rel="'.$playlist->id.'" src="'.plugins_url( 'embed-peertube-wp/images/remove.png' ).'" />
-	Shortcode : <input type="text" value="[playlist_peertube id='.$playlist->id.']" onClick="this.select();" />
-	</form></div>';
+		
+		echo '<label for="playlist_peertube_sd">Show Title:</label><br />';
+		echo '<input type="checkbox" name="show_title" value="1" id="playlist_peertube_sd" '.($playlist->show_title == 1 ? 'checked' : '').' /><br />';
+		echo '<label for="playlist_peertube_sd">Shortcode</label>';
+		/*if ($playlist->click === "0")*/ {echo '<input type="text" value="[playlist_player_peertube id='.$playlist->id.']" readonly onClick="this.select();"/>';}
+		//if ($playlist->click === "1") {echo '<input type="text" value="[playlist_peertube id='.$playlist->id.']" onClick="this.select();" />';}
+		
+		echo '</br><input type="image" src="'.plugins_url( 'embed-peertube-wp/images/save.png').'" title"Save" /> <img title="Remove this playlist" class="remove action" rel="'.$playlist->id.'" src="'.plugins_url( 'embed-peertube-wp/images/remove.png' ).'" />
+		</form></div>';
+
+
 	}
 }
 else

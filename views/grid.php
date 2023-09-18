@@ -12,8 +12,6 @@
             window.location.href = siteUrl + '/index.php/sendungsseite/?uuid=' + encodeURIComponent(uuid) + '&playlistId=' + encodeURIComponent(<?= $playlist->id ?>) ;
         });
     });
-	
-
 </script>
 <div class="playlist_peertube_grid" id="playlist_peertube_grid_<?= $playlist->id ?>">
 <?php
