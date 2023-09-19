@@ -9,7 +9,7 @@
             // Get the base URL of the WordPress site
             var siteUrl = '<?php echo site_url(); ?>';
             // Redirect to the separate page with the video URL as a parameter
-            window.location.href = siteUrl + '/index.php/sendungsseite/?uuid=' + encodeURIComponent(uuid) + '&playlistId=' + encodeURIComponent(<?= $playlist->id ?>) ;
+            window.location.href = siteUrl + '/index.php/playlist/?uuid=' + encodeURIComponent(uuid) + '&playlistId=' + encodeURIComponent(<?= $playlist->id ?>) ;
         });
     });
 </script>
@@ -100,7 +100,7 @@ foreach($data->data as $video)
 		echo '<div class="information_container">';
 		if($playlist->show_title) {
 			echo '<div class="header_container">';
-			echo '<h3 style="color: '.$playlist->text_color.'; font-size: '.$grid_textsize_header.'px;">'.$video->video->name.'</h3>';
+			echo '<h3 style="color: '.$grid_textcolor.'; font-size: '.$grid_textsize_header.'px;">'.$video->video->name.'</h3>';
 			echo '</div>';
 		}
 			echo '<div class="description_container">';
@@ -108,7 +108,7 @@ foreach($data->data as $video)
 			$visibleLines = array_slice($descriptionLines, 0, 3);
 			$visibleDescription = implode("\n", $visibleLines);
 
-			echo '<p class="video_description" style="color: '.$playlist->text_color.'; font-size: '.$grid_textsize_description.'px;">';
+			echo '<p class="video_description" style="color: '.$grid_textcolor.'; font-size: '.$grid_textsize_description.'px;">';
 			if (!empty($visibleDescription)) {
 				echo $visibleDescription;
 				echo '...';

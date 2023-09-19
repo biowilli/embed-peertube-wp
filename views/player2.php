@@ -81,13 +81,6 @@ if ($playlist->click === VIDEOLOCATION::SAMEPAGE || $show_player) {
 	</div>
 <div>
 	<?php }?>
-<script>
-	function playVideoInSeperatePage(uuid){
-		var siteUrl = '<?php echo site_url(); ?>';
-            // Redirect to the separate page with the video URL as a parameter
-            window.location.href = siteUrl + '/index.php/playlist/?uuid=' + encodeURIComponent(uuid)+ '&playlistId=' + encodeURIComponent(<?= $playlist->id  ?>) ;
-	}
-</script>
 	<?php
 	
 if ($playlist->template === PLAYLISTTEMPLATE::GRID) {
@@ -166,7 +159,7 @@ foreach($data->data as $video)
 		echo '<div class="information_container">';
 
 			echo '<div class="header_container">';
-			echo '<h3 style="color: '.$playlist->text_color.'; font-size: '.$grid_textsize_header.'px;">'.$video->video->name.'</h3>';
+			echo '<h3 style="color: '.$grid_textcolor.'; font-size: '.$grid_textsize_header.'px;">'.$video->video->name.'</h3>';
 			echo '</div>';
 		
 			echo '<div class="description_container">';
@@ -174,7 +167,7 @@ foreach($data->data as $video)
 			$visibleLines = array_slice($descriptionLines, 0, 3);
 			$visibleDescription = implode("\n", $visibleLines);
 
-			echo '<p class="video_description" style="color: '.$playlist->text_color.'; font-size: '.$grid_textsize_description.'px;">';
+			echo '<p class="video_description" style="color: '.$grid_textcolor.'; font-size: '.$grid_textsize_description.'px;">';
 			if (!empty($visibleDescription)) {
 				echo $visibleDescription;
 				echo '...';
@@ -221,6 +214,12 @@ foreach($data->data as $video)
 
 	echo $peertube_playlist;
 ?>
+	function playVideoInSeperatePage(uuid){
+		var siteUrl = '<?php echo site_url(); ?>';
+        // Redirect to the separate page with the video URL as a parameter
+        window.location.href = siteUrl + '/index.php/playlist/?uuid=' + encodeURIComponent(uuid)+ '&playlistId=' + encodeURIComponent(<?= $playlist->id  ?>) ;
+	}
+
 	var currentlyPlayingVideo = 0;
 	function playVideo(uuid) {
 
@@ -273,7 +272,9 @@ foreach($data->data as $video)
 	}
 
 	function updateStyle(selectedIndex) {
+		console.log("selectedIndex", selectedIndex);
 		var videos = document.querySelectorAll('.video');
+		console.log("vid", videos);
 		videos.forEach(function(video, index) {
 			if (index != selectedIndex) {
 				video.classList.add('inactive'); // Add a class to apply gray overlay
@@ -293,6 +294,13 @@ foreach($data->data as $video)
 
     jQuery(document).ready(function(){
 		var targetUuid = "<?php echo $_GET['uuid']; ?>";
+		console.log("uuid:", targetUuid);
+		console.log("playlist:", peertube_playlist);
+		if (targetUuid === ""){
+			console.log("uuid:", peertube_playlist[0].uuid);
+			playVideo(peertube_playlist[0].uuid);
+			return;
+		}
 		playVideo(targetUuid);
     });
 </script>
@@ -353,7 +361,7 @@ if ($playlist->template === PLAYLISTTEMPLATE::SLIDER) {
 	echo '<img class="thumbnail" src="'.$peertube_url.$video->video->previewPath.'" alt="" />';
 	echo '<div class="information_container">';
 	echo '<div class="header_container">';
-	echo '<h3 style="color: '.$playlist->text_color.'; font-size: '.$grid_textsize_header.'px;">'.$video->video->name.'</h3>';
+	echo '<h3 style="color: '.$grid_textcolor.'; font-size: '.$grid_textsize_header.'px;">'.$video->video->name.'</h3>';
 	echo '</div>';
 	echo '<div class="description_container">';
 
@@ -361,7 +369,7 @@ if ($playlist->template === PLAYLISTTEMPLATE::SLIDER) {
 	$visibleLines = array_slice($descriptionLines, 0, 3);
 	$visibleDescription = implode("\n", $visibleLines);
 
-	echo '<p class="video_description" style="color: '.$playlist->text_color.'; font-size: '.$grid_textsize_description.'px;">';
+	echo '<p class="video_description" style="color: '.$grid_textcolor.'; font-size: '.$grid_textsize_description.'px;">';
 	if (!empty($visibleDescription)) {
 		echo $visibleDescription;
 		echo '...';

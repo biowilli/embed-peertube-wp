@@ -466,7 +466,6 @@ function display_player_peertube($atts)
                 $player_html = ob_get_clean();
                 
                 return $player_html;
-
                 
                     } else {
                         $error_msg =
