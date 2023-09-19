@@ -195,6 +195,11 @@ foreach($data->data as $video)
 	$peertube_count = 0;
 	foreach($data->data as $video)
 	{
+		//deleted or private video
+		if (is_null($video) || is_null($video->video) || is_null($video->video->name)){
+			continue;
+		}
+
 		if ($peertube_count != 0) {
 			$peertube_playlist .= ",";
 		}
