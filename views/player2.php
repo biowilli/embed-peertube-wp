@@ -298,14 +298,20 @@ foreach($data->data as $video)
 		}
 
     jQuery(document).ready(function(){
-		var targetUuid = "<?php echo $_GET['uuid']; ?>";
-		console.log("uuid:", targetUuid);
-		console.log("playlist:", peertube_playlist);
+
+		var targetUuid = "<?php
+			if (isset($_GET['uuid'])) {
+				echo $_GET['uuid'];
+			} else {
+				echo "";
+			}
+		?>";
+
 		if (targetUuid === ""){
-			console.log("uuid:", peertube_playlist[0].uuid);
 			playVideo(peertube_playlist[0].uuid);
 			return;
 		}
+		
 		playVideo(targetUuid);
     });
 </script>
