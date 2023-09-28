@@ -20,8 +20,6 @@
 	<label>Name: </label><input type="text" name="name" /><br />
 	<label>Playlist ID: </label><input type="text" name="playlist_id" /> You find the Playlist ID in the URL of the playlist: (marked in color)<br/> 
 	https://fair.tube/w/p/<strong style="color: blue">kwnt5xET6s1kijp6fUwHLh</strong><br />
-	https://test-vod.fs1.tv/w/p/<strong style="color: blue">dkgzqvmdVW56FCninVMdHM</strong><br />
-	https://displayeurope.video/w/p/<strong style="color: blue">afdzsvsfVF56FSsisDxDHQ</strong><br />
 	<br />
 	<label>Playlist View: </label>
 	<br />
