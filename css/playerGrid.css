@@ -1,8 +1,11 @@
-body
+/* 
+LOCAL DEBUG 
+ body
   .is-layout-constrained
   > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
-  max-width: none !important; /* TODO das wegmachen am ende!!! */
+  max-width: none !important; /*
 }
+*/
 
 .playlist_peertube_grid {
   display: flex;
@@ -192,7 +195,7 @@ body
 :root {
   --swiper-theme-color: #e5e5e5 !important;
 }
-
+/* swiper is not allowed because issue with anouther swiper in wp elementor
 body {
   overflow-x: hidden;
 }
@@ -242,3 +245,4 @@ body {
     border-radius: 2px;
   }
 }
+*/

@@ -1,8 +1,11 @@
-body
+/* 
+LOCAL DEBUG 
+ body
   .is-layout-constrained
   > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
-  max-width: none !important; /* TODO das wegmachen am ende!!! */
+  max-width: none !important; /*
 }
+*/
 
 .control_view {
   display: flex;
@@ -109,7 +112,7 @@ body
     width: 100%;
   }
 }
-
+/* swiper is not allowed because issue with anouther swiper in wp elementor
 :root {
   --swiper-theme-color: #e5e5e5 !important;
 }
@@ -178,3 +181,4 @@ p {
     border-radius: 2px;
   }
 }
+*/

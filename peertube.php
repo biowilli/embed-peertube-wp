@@ -233,7 +233,6 @@ function channels_peertube()
 
         //Table to store the channel data
         $channels_peertube_table = $wpdb->prefix . "channels_peertube";
-        //TODO check this in more detail::
         //If the form has been submitted
         if (sizeof($_POST) > 0) {
             //If the name or channel ID fields are empty

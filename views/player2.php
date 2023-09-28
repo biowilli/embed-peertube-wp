@@ -5,7 +5,7 @@
 
 	abstract class VIDEOLOCATION {
 		const SAMEPAGE = "0";
-		const SEPERATE = "1";
+		const SEPARATE = "1";
 	}
 
 	abstract class PLAYLISTTEMPLATE {
@@ -67,25 +67,26 @@
 <?php
 if ($playlist->click === VIDEOLOCATION::SAMEPAGE || $show_player) {
 ?>
+
 <div class="control_view">
 	<div class="video_view">
 		<div class="video_background">
-		<div class="video_format">
-		<div class="video_container_iframe" id="video_container_iframe">
-		</div>
-		</div>
+			<div class="video_format">
+				<div class="video_container_iframe" id="video_container_iframe">
+				</div>
+			</div>
 		</div>
 		<div class="description_view" id="description_view">
 			<p id="description_container"> </p>
 		</div>
 	</div>
-<div>
+</div>
 	<?php }?>
 	<?php
 	
 if ($playlist->template === PLAYLISTTEMPLATE::GRID) {
 	if ($playlist->show_title) {
-		echo "<p>".$playlist->name."<p>";
+		echo "<p>".$playlist->name."</p>";
 		echo "<br>";
 	  } }?>
 
@@ -93,97 +94,82 @@ if ($playlist->template === PLAYLISTTEMPLATE::GRID) {
 <?php
 if ($playlist->template === "0") {
 
-foreach($data->data as $video)
-{
-	//deleted or private video
-	if (is_null($video) || is_null($video->video) || is_null($video->video->name)){
-		continue;
+	foreach($data->data as $video)
+	{
+		//deleted or private video
+		if (is_null($video) || is_null($video->video) || is_null($video->video->name)){
+			continue;
+		}
+
+		// videoElement open
+		$videoElement = "
+		<div
+			class='video'
+			style='transition-delay:${pl_hover_delay}ms; transition-delay:${pl_hover_delay}ms; margin-top:${marginTopVideo}px; margin-right:${marginRightVideo}px; margin-bottom:${marginBottomVideo}px; margin-left:${marginLeftVideo}px; border-top-left-radius:${grid_borderradius_top_left}px; border-top-right-radius:${grid_borderradius_top_right}px; border-bottom-left-radius:${grid_borderradius_bottom_left}px; border-bottom-right-radius:${grid_borderradius_bottom_right}px;'
+			>
+		";
+		echo $videoElement;
+
+			//video_container open
+			echo '<div class="video_container" rel="'.$video->video->uuid.'">';
+				$thumbnailContainerHoverElement = "
+				<div
+					class='thumbnail_container_hover' 
+					style='background-color:{$grid_backgroundcolor}; color:{$grid_textcolor}; border-top-left-radius:{$hover_grid_borderradius_top_left}px; border-top-right-radius:{$hover_grid_borderradius_top_right}px; border-bottom-left-radius:{$hover_grid_borderradius_bottom_left}px; border-bottom-right-radius: {$hover_grid_borderradius_bottom_right}px;'";
+					if ($playlist->click === VIDEOLOCATION::SAMEPAGE || $show_player) {
+						$thumbnailContainerHoverElement .= " onClick='playVideo(\"{$video->video->uuid}\")'";
+					} elseif ($playlist->click === VIDEOLOCATION::SEPARATE && !$show_player) {
+						$thumbnailContainerHoverElement .= " onClick='playVideoInSeparatePage(\"{$video->video->uuid}\")'";
+					}
+					
+					$thumbnailContainerHoverElement .= ">";
+					echo $thumbnailContainerHoverElement;
+
+						echo '<div class="thumbnail_container">';
+							echo '<img class="thumbnail" src="'.$peertube_url.$video->video->previewPath.'" />';
+					
+							$selectedOption = get_option('pl_playbutton_style_grid');
+							$button_sprites = [
+								'playbutton_black_grid' => 'embed-peertube-wp/images/playbutton_black.svg',
+								'playbutton_white_grid' => 'embed-peertube-wp/images/playbutton_white.svg',
+								'playbutton_fs1_grid' => 'embed-peertube-wp/images/playbutton_fs1.svg',
+								'playbutton_fs1_2_grid' => 'embed-peertube-wp/images/playbutton_fs1_2.svg'
+							];
+							$button_sprite_default = 'embed-peertube-wp/images/playbutton_white.svg';
+
+							$playbuttonElement = "<img class='play_video' src='".plugins_url(array_key_exists($selectedOption, $button_sprites) ? $button_sprites[$selectedOption] : $button_sprite_default) . "' />";
+							echo $playbuttonElement;
+					
+						echo '</div>'; //thumbnail_container close
+
+
+					echo '<div class="information_container">';
+						$informationContainerELement = "<div class='header_container'>
+															<h3 style='color:{$grid_textcolor}; font-size:{$grid_textsize_header}px;'>{$video->video->name}</h3>
+														</div>";
+						echo $informationContainerELement;
+					
+
+						$descriptionLines = explode("\n", $video->video->description);
+						$visibleLines = array_slice($descriptionLines, 0, 3);
+						$visibleDescription = implode("\n", $visibleLines);
+
+						echo '<div class="description_container">';
+							echo '<p class="video_description" style="color: '.$grid_textcolor.'; font-size: '.$grid_textsize_description.'px;">';
+							if (!empty($visibleDescription)) {
+								echo $visibleDescription;
+								echo '...';
+							} else {
+								echo 'No description';
+							}
+							echo '</p>'; 
+
+						echo '</div>'; //close description_container 
+					echo '</div>'; //close information_container
+				echo '</div>'; // Close thumbnail_container_hover
+			echo '</div>'; // Close video_container
+		echo '</div>'; // Close videoElement
 	}
-
-	// Start building the video div with the applied styles.
-	echo '<div class="video" style="';
-	echo 'transition-delay:' . $pl_hover_delay   . 'ms; ';
-	echo 'margin-top: ' . $marginTopVideo . 'px; ';
-	echo 'margin-right: ' . $marginRightVideo . 'px; ';
-	echo 'margin-bottom: ' . $marginBottomVideo . 'px; ';
-	echo 'margin-left: ' . $marginLeftVideo . 'px; ';
-	echo 'border-top-left-radius: ' . $grid_borderradius_top_left . 'px; ';
-    echo 'border-top-right-radius: ' . $grid_borderradius_top_right . 'px; ';
-    echo 'border-bottom-left-radius: ' . $grid_borderradius_bottom_left . 'px; ';
-    echo 'border-bottom-right-radius: ' . $grid_borderradius_bottom_right . 'px; ';
-	echo '">';
-	echo '<div class="video_container" rel="'.$video->video->uuid.'">';
-	echo '<div class="thumbnail_container_hover" style="';
-	echo 'background-color: ' . $grid_backgroundcolor . '; ';
-	echo 'color: ' . $grid_textcolor . '; ';
-	echo 'border-top-left-radius: ' . $hover_grid_borderradius_top_left . 'px; ';
-    echo 'border-top-right-radius: ' . $hover_grid_borderradius_top_right . 'px; ';
-    echo 'border-bottom-left-radius: ' . $hover_grid_borderradius_bottom_left . 'px; ';
-    echo 'border-bottom-right-radius: ' . $hover_grid_borderradius_bottom_right . 'px; ';
-	echo '"';
-	if ($playlist->click === VIDEOLOCATION::SAMEPAGE || $show_player){
-		echo 'onClick="playVideo(\'' . $video->video->uuid . '\')"';
-	}
-
-	if ($playlist->click === VIDEOLOCATION::SEPERATE && !$show_player){
-		echo 'onClick="playVideoInSeperatePage(\'' . $video->video->uuid . '\')"';
-	}
-	echo '>';
-	echo '<div class="thumbnail_container">';
-	echo '<img class="thumbnail" src="'.$peertube_url.$video->video->previewPath.'" />';
-	$selectedOption = get_option('pl_playbutton_style_grid');
-
-	switch ($selectedOption) {
-		case 'playbutton_black_grid':
-			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-wp/images/playbutton_black.svg').'" />';
-			break;
-
-		case 'playbutton_white_grid':
-			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-wp/images/playbutton_white.svg').'" />';
-			break;
-
-		case 'playbutton_fs1_grid':
-			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-wp/images/playbutton_fs1.svg').'" />';
-			break;
-
-		case 'playbutton_fs1_2_grid':
-			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-wp/images/playbutton_fs1_2.svg').'" />';
-			break;
-
-		default:
-			echo '<img class="play_video" src="'.plugins_url( 'embed-peertube-wp/images/playbutton_white.svg').'" />';
-			break;
-	}
-
-	echo '</div>';
-		echo '<div class="information_container">';
-
-			echo '<div class="header_container">';
-			echo '<h3 style="color: '.$grid_textcolor.'; font-size: '.$grid_textsize_header.'px;">'.$video->video->name.'</h3>';
-			echo '</div>';
-		
-			echo '<div class="description_container">';
-			$descriptionLines = explode("\n", $video->video->description);
-			$visibleLines = array_slice($descriptionLines, 0, 3);
-			$visibleDescription = implode("\n", $visibleLines);
-
-			echo '<p class="video_description" style="color: '.$grid_textcolor.'; font-size: '.$grid_textsize_description.'px;">';
-			if (!empty($visibleDescription)) {
-				echo $visibleDescription;
-				echo '...';
-			} else {
-				echo 'No description';
-			}
-			echo '</p>';
-
-			echo '</div>';
-			echo '</div>';
-
-	
-    echo '</div>'; // Close thumbnail_container_hover
-    echo '</div>'; // Close video_container
-    echo '</div>'; // Close video
-}
 }
 ?>
 </div>
@@ -219,7 +205,7 @@ foreach($data->data as $video)
 
 	echo $peertube_playlist;
 ?>
-	function playVideoInSeperatePage(uuid){
+	function playVideoInSeparatePage(uuid){
 		var siteUrl = '<?php echo site_url(); ?>';
         // Redirect to the separate page with the video URL as a parameter
         window.location.href = siteUrl + '/index.php/playlist/?uuid=' + encodeURIComponent(uuid)+ '&playlistId=' + encodeURIComponent(<?= $playlist->id  ?>) ;
@@ -245,7 +231,7 @@ foreach($data->data as $video)
 		}
 		currentlyPlayingVideo = targetIndex;
         // Setze die Video-URL als src-Attribut des <iframe>-Elements 350px
-		var iframe = '<iframe width="100%" height="100%" src="'+ targetEmbed + '?autoplay=1&rel=0&peertubeLink=0&api=1" frameborder="0" allowfullscreen></iframe>';
+		var iframe = '<iframe width="100%" height="100%" src="'+ targetEmbed + '?autoplay=0&rel=0&peertubeLink=0&api=1" frameborder="0" allowfullscreen></iframe>';
 
 		jQuery('#video_container_iframe').html(iframe);
 
@@ -260,14 +246,13 @@ foreach($data->data as $video)
 	}
 
 	function updateDescription(description) {
-		var discription = document.getElementById('description_container');
-		discription.textContent = description;
+		var description = document.getElementById('description_container');
+		description.textContent = description;
     }
 
 	// PeerTube >= 2.2.
 	function checkPlaybackStatus(status) {
 		if (status.playbackState == "ended") {
-			console.log(currentlyPlayingVideo);
 			if (currentlyPlayingVideo != -1) {
 				var nextIndex = (currentlyPlayingVideo + 1) % peertube_playlist.length;
 				var nextVideo = peertube_playlist[nextIndex];
@@ -277,9 +262,7 @@ foreach($data->data as $video)
 	}
 
 	function updateStyle(selectedIndex) {
-		console.log("selectedIndex", selectedIndex);
 		var videos = document.querySelectorAll('.video');
-		console.log("vid", videos);
 		videos.forEach(function(video, index) {
 			if (index != selectedIndex) {
 				video.classList.add('inactive'); // Add a class to apply gray overlay
@@ -316,11 +299,12 @@ foreach($data->data as $video)
     });
 </script>
 
+
 <?php 
 if ($playlist->template === PLAYLISTTEMPLATE::SLIDER) {
 	?>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+<!--- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" /> --->
 <div class="container_silder">
   <p><?php 
   if ($playlist->show_title) {
@@ -362,8 +346,8 @@ if ($playlist->template === PLAYLISTTEMPLATE::SLIDER) {
 		echo 'onClick="playVideo(\'' . $video->video->uuid . '\')"';
 	}
 
-	if ($playlist->click === VIDEOLOCATION::SEPERATE && !$show_player){
-		echo 'onClick="playVideoInSeperatePage(\'' . $video->video->uuid . '\')"';
+	if ($playlist->click === VIDEOLOCATION::SEPARATE && !$show_player){
+		echo 'onClick="playVideoInSeparatePage(\'' . $video->video->uuid . '\')"';
 	}
 
 	echo '>';
