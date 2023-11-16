@@ -135,7 +135,11 @@ function playlist_peertube_css()
 function register_playlist_peertube_settings()
 {
     add_option("pl_peertube_url", "https://fair.tube");
-    add_option('pl_grid_backgroundcolor', '#575757');
+    add_option('pl_autoplay', 1);
+    add_option('pl_description_textcolor', '#FFFFFF');
+    add_option('pl_showmore_textcolor', '#FFFFFF');
+
+    add_option('pl_grid_backgrondcolor', '#575757');
     add_option('pl_grid_textcolor', '#FFFFFF');
 
     add_option('pl_grid_textsize_header', '20');
@@ -179,6 +183,10 @@ function display_peertube_settings()
         check_admin_referer("pl_peertube_settings");
         $url = sanitize_text_field(rtrim($_POST["pl_peertube_url"], "/"));
         update_option("pl_peertube_url", $url);
+
+        update_option('pl_autoplay', absint($_POST['pl_autoplay']));
+        update_option('pl_showmore_textcolor', sanitize_text_field($_POST['pl_showmore_textcolor']));
+        update_option('pl_description_textcolor', sanitize_text_field($_POST['pl_description_textcolor']));
         update_option('pl_grid_backgroundcolor', sanitize_text_field($_POST['pl_grid_backgroundcolor']));
         update_option('pl_grid_textcolor', sanitize_text_field($_POST['pl_grid_textcolor']));
         update_option('pl_grid_textsize_header', sanitize_text_field($_POST['pl_grid_textsize_header']));
@@ -405,7 +413,7 @@ function display_player_peertube2($atts)
     wp_enqueue_style("player_peertube_grid_css", plugins_url("css/playerGrid.css", __FILE__));
 
     // Load channel view file and render HTML
-    $view = plugin_dir_path(__FILE__) . "views/player2.php";
+    $view = plugin_dir_path(__FILE__) . "views/player.php";
     ob_start();
     include $view;
     $player_html = ob_get_clean();
@@ -459,7 +467,7 @@ function display_player_peertube($atts)
                         );
 
                 // Load channel view file and render HTML
-                $view = plugin_dir_path(__FILE__) . "views/player2.php";
+                $view = plugin_dir_path(__FILE__) . "views/player.php";
                 ob_start();
                 include $view;
                 $player_html = ob_get_clean();

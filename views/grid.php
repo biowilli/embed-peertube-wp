@@ -13,14 +13,17 @@
         });
     });
 </script>
+
 <div class="playlist_peertube_grid" id="playlist_peertube_grid_<?= $playlist->id ?>">
 <?php
 
 //Style Grid
 $pl_hover_delay = get_option('pl_hover_delay');
+$pl_hover_delay = get_option('pl_autoplay');
 
 $grid_backgroundcolor = get_option("pl_grid_backgroundcolor"); 
 $grid_textcolor = get_option("pl_grid_textcolor"); 
+
 $grid_textsize_header = get_option("pl_grid_textsize_header"); 
 $grid_textsize_description = get_option("pl_grid_textsize_description"); 
 
@@ -100,21 +103,25 @@ foreach($data->data as $video)
 		echo '<div class="information_container">';
 		if($playlist->show_title) {
 			echo '<div class="header_container">';
-			echo '<h3 style="color: '.$grid_textcolor.'; font-size: '.$grid_textsize_header.'px;">'.$video->video->name.'</h3>';
+			echo '<h3 class="grid_header" style="color: '.$grid_textcolor.'; font-size: '.$grid_textsize_header.'px;">'.$video->video->name.'</h3>';
 			echo '</div>';
 		}
 			echo '<div class="description_container">';
-			$descriptionLines = explode("\n", $video->video->description);
-			$visibleLines = array_slice($descriptionLines, 0, 3);
-			$visibleDescription = implode("\n", $visibleLines);
+
+			//$descriptionLines = explode("\n", $video->video->description);
+			//$visibleLines = array_slice($descriptionLines, 0, 3);
+			//$visibleDescription = implode("\n", $visibleLines);
 
 			echo '<p class="video_description" style="color: '.$grid_textcolor.'; font-size: '.$grid_textsize_description.'px;">';
+
+			echo $video->video->description;
+			/*
 			if (!empty($visibleDescription)) {
 				echo $visibleDescription;
 				echo '...';
 			} else {
 				echo 'No description';
-			}
+			}*/
 			echo '</p>';
 
 			echo '</div>';
@@ -124,7 +131,10 @@ foreach($data->data as $video)
     echo '</div>'; // Close thumbnail_container_hover
     echo '</div>'; // Close video_container
     echo '</div>'; // Close video
+	echo 'Hier bin ich';
 }
 
 ?>
+
+
 </div>

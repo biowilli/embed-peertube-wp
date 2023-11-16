@@ -1,11 +1,11 @@
-/* 
-LOCAL DEBUG 
+
+/*LOCAL DEBUG */
  body
   .is-layout-constrained
   > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
-  max-width: none !important; /*
+  max-width: none !important; 
 }
-*/
+
 
 .playlist_peertube_grid {
   display: flex;

@@ -11,6 +11,27 @@
             </td>
         </tr>
     </table>
+    <h3>Player</h3>
+    <table class="form-table">
+    <tr valign="top">
+    <th scope="row">Autoplay</th>s
+        <td>
+        <input type="checkbox" name="pl_autoplay" value="1" <?php checked(get_option('pl_autoplay'), 1 ); ?> />
+        </td>
+    </tr>
+    <tr valign="top">
+            <th scope="row">Player-Description-Text-Color:</th>
+            <td>
+                <input type="color" name="pl_description_textcolor" value="<?php echo esc_attr( get_option('pl_description_textcolor') ); ?>" />
+            </td>
+    </tr>
+    <tr valign="top">
+            <th scope="row">Player-Show-More-Text-Color:</th>
+            <td>
+                <input type="color" name="pl_showmore_textcolor" value="<?php echo esc_attr( get_option('pl_showmore_textcolor') ); ?>" />
+            </td>
+    </tr>
+</table>
     <h3>Playbutton</h3>
     <table class="form-table">
         <tr valign="top">

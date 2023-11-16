@@ -89,14 +89,15 @@ LOCAL DEBUG
   margin: 10px;
 }
 
-.video.inactive {
-  position: relative; /* To position the overlay */
-  filter: grayscale(100%); /* Apply the gray overlay effect */
+.video.active {
+  position: relative;       /* To position the overlay */
+  filter: grayscale(100%);  /* Apply the gray overlay effect */
 }
 
 .video-container {
   min-width: 720px;
 }
+
 
 /* Media Query für kleinere Bildschirmgrößen */
 @media (max-width: 1024px) {

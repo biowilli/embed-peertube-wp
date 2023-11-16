@@ -1,6 +1,50 @@
 <?php
-function getVideoChannelVideos($channelId) {
 
+function getMetaDataForVideo($videoId) {
+
+	if (!is_numeric($videoId) || is_null($videoId)) {
+		return "Missing video ID!";
+	}
+
+	wp_enqueue_script("jquery");
+	$peertube_url = get_option("pl_peertube_url");
+	$apiURL = "/api/v1";
+	$url = $peertube_url . $apiURL . "/videos/" . $videoId;
+	echo "url for metadata";
+	echo $url;
+	$response = wp_remote_get($url);
+	$json = wp_remote_retrieve_body($response);
+
+	if (empty($json)) {
+		return "Error retrieving peertube Metadata from Peertube API on instance " . $peertube_url . " (you can change this in the Embed Peertube settings)";
+	}
+
+	$data = json_decode($json);
+
+	if (!$data) {
+		return "Error converting JSON data";
+	}
+
+	if (isset($data->error) || isset($data->errors)) {
+		$error_msg =
+			"Error retrieving Metadata from Peertube API on instance " .
+			$peertube_url .
+			" (you can change this in the Embed Peertube settings)<br />";
+		
+		if (!empty($data->error)) {
+			$error_msg .= "API error: " . $data->error . "<br />";
+			return $error_msg;
+		} else {
+			$error_msg .= "API errors: " . print_r($data->errors, true) . "<br />";
+			return $error_msg;
+		}
+	}
+	
+	return $data;
+}
+
+function getVideoChannelVideos($channelId) {
+//TODO noch fertig machen
 	if (!is_numeric($videoId) || is_null($videoId)) {
 		return "Missing video ID!";
 	}

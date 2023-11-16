@@ -1,11 +1,11 @@
 /* 
-LOCAL DEBUG 
+LOCAL DEBUG */
  body
   .is-layout-constrained
   > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
-  max-width: none !important; /*
+  max-width: none !important; 
 }
-*/
+
 
 .playlist_peertube_grid {
   display: flex;
@@ -37,13 +37,6 @@ LOCAL DEBUG
   box-sizing: border-box;
 }
 
-.thumbnail_container_hover {
-  overflow: hidden;
-  position: relative;
-  transition-delay: 300ms;
-  transition: transform 0.3s ease-in-out;
-}
-
 .video {
   position: relative;
   display: block;
@@ -57,6 +50,13 @@ LOCAL DEBUG
   overflow: visible;
   z-index: 1;
   box-shadow: 10px 20px 15px rgba(0, 0, 0, 0.3);
+}
+
+.thumbnail_container_hover {
+  overflow: hidden;
+  position: relative;
+  transition-delay: 300ms;
+  transition: transform 0.3s ease-in-out;
 }
 
 .description_container {
@@ -84,18 +84,22 @@ LOCAL DEBUG
   position: relative;
 }
 
+.thumbnail {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+}
+
+
+
+
 .video.inactive {
   position: relative;
   filter: grayscale(100%);
   margin: 0px;
 }
 
-.thumbnail {
-  width: 100%;
-  height: auto;
-}
-
-.play_video {
+.play_grid_button {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -121,6 +125,29 @@ LOCAL DEBUG
   height: 100%;
   width: 1414px;
 }
+
+#description_container {
+  max-height: 3em; /* Defines the maximum height in the folded state with 3em, also sind zwei zeilen sichtbar */
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.line {
+  border: none;
+  height: 1px;
+  background-color: #ccc; 
+  margin: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Leichter Schatten */
+}
+
+#read_more_button {
+  display: block;
+  margin: 10px auto; 
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
 
 @media (max-width: 1564px) {
   .video_background {
