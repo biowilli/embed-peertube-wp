@@ -14,7 +14,7 @@
     <h3>Player</h3>
     <table class="form-table">
     <tr valign="top">
-    <th scope="row">Autoplay</th>s
+    <th scope="row">Autoplay</th>
         <td>
         <input type="checkbox" name="pl_autoplay" value="1" <?php checked(get_option('pl_autoplay'), 1 ); ?> />
         </td>
