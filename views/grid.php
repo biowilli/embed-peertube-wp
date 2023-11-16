@@ -131,7 +131,6 @@ foreach($data->data as $video)
     echo '</div>'; // Close thumbnail_container_hover
     echo '</div>'; // Close video_container
     echo '</div>'; // Close video
-	echo 'Hier bin ich';
 }
 
 ?>

@@ -23,6 +23,7 @@ function add_peertube_install()
     // Define table names
     $channels_peertube_table = $wpdb->prefix . "channels_peertube";
     $playlist_peertube_table = $wpdb->prefix . "playlists_peertube";
+    $livestream_peertube_table = $wpdb->prefix . "livestream_peertube";
 
     // Include WordPress upgrade functions
     require_once ABSPATH . "wp-admin/includes/upgrade.php";
@@ -55,9 +56,22 @@ function add_peertube_install()
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 	";
 
+    // Create SQL query for playlist table
+    $livestream_sql =
+        "
+		CREATE TABLE `" .
+        $livestream_peertube_table .
+        "` (
+			id int(11) NOT NULL AUTO_INCREMENT,
+			livestream_id varchar(50) NOT NULL,
+			PRIMARY KEY  (id)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+	";
+
     // Execute the queries
     dbDelta($channel_sql);
     dbDelta($playlist_sql);
+    dbDelta($livestream_sql);
 }
 
 function remove_peertube_desinstall()
@@ -67,14 +81,17 @@ function remove_peertube_desinstall()
     // Define table names
     $playlist_peertube_table = $wpdb->prefix . "playlists_peertube";
     $channels_peertube_table = $wpdb->prefix . "channels_peertube";
+    $livestream_peertube_table = $wpdb->prefix . "livestream_peertube";
 
     // Create SQL queries to drop the tables
     $playlist_sql = "DROP TABLE " . $playlist_peertube_table;
     $channels_sql = "DROP TABLE " . $channels_peertube_table;
+    $livestream_sql = "DROP TABLE " . $channels_peertube_table;
 
     // Execute the queries
     $wpdb->query($playlist_sql);
     $wpdb->query($channels_sql);
+    $wpdb->query($livestream_sql);
 }
 
 // Add a new menu item to the WordPress admin menu
@@ -108,6 +125,14 @@ function register_peertube_plugin_menu()
         "manage_options",
         "playlist-pt",
         "playlists_peertube"
+    );
+    add_submenu_page(
+        "playlists_peertube",
+        "Manage Livestreams",
+        "Livestreams",
+        "manage_options",
+        "livestream-pt",
+        "livestreams_peertube"
     );
     add_submenu_page(
         "playlists_peertube",
@@ -229,6 +254,59 @@ function display_peertube_settings()
 function information_peertube()
 {
     include plugin_dir_path(__FILE__) . "views/information.php";
+}
+
+//This function creates a Peertube channel and allows you to display it using a shortcode in WordPress.
+function livestreams_peertube()
+{
+
+    //If the user is an administrator
+    if (is_admin()) {
+        //Global variable for database access
+        global $wpdb;
+
+        //Table to store the channel data
+        $livestream_peertube_table = $wpdb->prefix . "livestream_peertube";
+        //If the form has been submitted
+        if (sizeof($_POST) > 0) {
+            //If the name or channel ID fields are empty
+            if (empty($_POST["livestream_id"])) {
+                echo "<h2>You must enter the ID of the Peertube Livestream!</h2>";
+            } elseif (!isset($_POST["id"])) {
+                $livestream_id = $_POST["livestream_id"];
+
+                //Nonce verification
+                check_admin_referer("new_livestream_peertube");
+
+                //Insert the new channel data into the database
+                $query = $wpdb->prepare(
+                    "INSERT INTO " .
+                        $livestream_peertube_table .
+                        " (`livestream_id`) VALUES (%s)",
+                    $livestream_id
+                );
+                $wpdb->query($query);
+            } else {
+                $livestream_id = $_POST["livestream_id"];
+                //Nonce verification
+                check_admin_referer("update_livestream_peertube_" . $_POST["id"]);
+                $query = $wpdb->prepare(
+                    "UPDATE " .
+                        $livestream_peertube_table .
+                        " SET `livestream_id` = %s WHERE id = %d", $livestream_id, (int) $_POST["id"]
+                );
+                
+                $wpdb->query($query);
+            }
+        }
+
+        //all cards are recovered
+        $livestreams = $wpdb->get_results(
+            "SELECT * FROM " . $livestream_peertube_table
+        );
+
+        include plugin_dir_path(__FILE__) . "views/livestreams.php";
+    }
 }
 
 //This function creates a Peertube channel and allows you to display it using a shortcode in WordPress.
@@ -365,6 +443,36 @@ function remove_playlist_peertube_callback()
             $query = $wpdb->prepare(
                 "DELETE FROM " .
                     $playlist_peertube_table .
+                    "
+                 WHERE id=%d",
+                $_POST["id"]
+            );
+            $res = $wpdb->query($query);
+        }
+        wp_die();
+    }
+}
+
+//Ajax : delete a livestreams
+add_action(
+    "wp_ajax_remove_livestream_peertube",
+    "remove_livestream_peertube_callback"
+);
+function remove_livestream_peertube_callback()
+{
+    // Check if the AJAX request came from a valid source
+    check_ajax_referer("remove_livestream_peertube");
+
+    if (is_admin()) {
+        global $wpdb;
+
+        $livestreams_peertube_table = $wpdb->prefix . "livestream_peertube";
+
+        if (is_numeric($_POST["id"])) {
+            // Delete all images associated with the channel
+            $query = $wpdb->prepare(
+                "DELETE FROM " .
+                    $livestreams_peertube_table .
                     "
                  WHERE id=%d",
                 $_POST["id"]
@@ -586,7 +694,7 @@ function display_playlist_peertube($atts)
     }
 }
 
-// Shortcode to display a Peertube playlist
+// Shortcode to display a Peertube channel
 add_shortcode("channel_peertube", "display_channel_peertube");
 function display_channel_peertube($atts)
 {
@@ -669,6 +777,59 @@ function display_channel_peertube($atts)
         return "Missing channel ID!";
     }
 }
+
+// Shortcode to display a Peertube livestream
+//TODO
+add_shortcode("livestream_peertube", "display_livestream_peertube");
+function display_livestream_peertube($atts)
+{
+    $peertube_url = get_option("pl_peertube_url");
+
+    // Check if the Peertube instance URL is set
+    if (empty($peertube_url)) {
+        return '<strong>You need to set your Peertube instance url in the <a href="' .
+            admin_url("admin.php?page=playlist-pt-settings") .
+            '">settings</a> to use Peertube Playlist</strong>';
+    }
+
+    if (is_numeric($atts["id"])) {
+        global $wpdb;
+        $livestreams_peertube_table = $wpdb->prefix . "livestream_peertube";
+        $query = $wpdb->prepare(
+            "SELECT * FROM {$livestreams_peertube_table} WHERE id = %d",
+            $atts["id"]
+        );
+        $livestream = $wpdb->get_row($query);
+        if ($livestream) {
+            wp_enqueue_script("jquery");
+            echo "$livestream->livestream_id";
+            
+            if (!empty($livestream->livestream_id)) {
+                
+                                        // Enqueue the CSS stylesheet
+                                        wp_enqueue_style(
+                                            "livestream_peertube_grid_css",
+                                            plugins_url("css/livestream.css", __FILE__)
+                                        );
+                                        
+                                        // Load channel view file and render HTML
+                                        $view = plugin_dir_path(__FILE__) . "views/livestream.php";
+                                        ob_start();
+                                        include $view;
+                                        $livestream_html = ob_get_clean();
+
+                                        return $livestream_html;
+                                    }
+                                    else {
+                                        return "Missing livestream ID!";
+                                    }
+              
+    } else {
+        return "Missing livestream ID!";
+    }
+}
+}
+
 
 add_action("wp_enqueue_scripts", function () {
     wp_enqueue_script("jquery");
