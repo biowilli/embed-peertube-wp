@@ -84,15 +84,16 @@ if ($playlist->click === VIDEOLOCATION::SAMEPAGE || $show_player) {
 		</div>
 		<div class="description_view" id="description_view">
 			<p id="description_container" style="color: <?php echo $description_textcolor; ?>;"></p>
+			<p id="metadata_container" style="color: <?php echo $description_textcolor; ?>;"></p>
 			<hr class="line" />
-			<button id="read_more_button" onclick="toggleDescription()" style="color: <?php echo $pl_showmore_textcolor; ?>;">Mehr anzeigen</button>
+
+			<button id="read_more_button" onclick="toggleDescription()" style="color: <?php echo $showmore_textcolor; ?>;">Mehr anzeigen</button>
 		</div>
 
 	</div>
 </div>
 	<?php }?>
 	<?php
-	
 if ($playlist->template === PLAYLISTTEMPLATE::GRID) {
 	if ($playlist->show_title) {
 		echo "<p>".$playlist->name."</p>";
@@ -171,17 +172,6 @@ if ($playlist->template === "0") {
 }
 ?>
 </div>
-<script>
-	document.addEventListener("DOMContentLoaded", function() {
-	var ellipsis = Ellipsis({
-          lines: 1
-        });
-		console.log("ellipsis", ellipsis);
-	var elements = document.getElementsByClassName('video_description');
-	ellipsis.add(elements);
-  });
-
-</script>
 
 
 <script src="https://unpkg.com/@peertube/embed-api/build/player.min.js"></script>
@@ -278,16 +268,23 @@ function toggleDescription() {
         history.pushState({}, '', currentUrl.toString());
 
 		updateStyle(targetIndex);
-
+		updateDescription(targetDescription);
 		updateMetadata(targetUuid);
 		initializePlayer(targetIndex, autoplay);
 	}
 
-	function updateMetadata(targetUuid) {
-		var metadata = <?php echo "test"?>
+	function updateDescription(targetDescription) {
+		console.info("update Description from Peertube:", targetDescription);
+		var videoDescriptionContainer = document.getElementById('description_container');
+		videoDescriptionContainer.textContent = targetDescription;
+    }
 
-		var description = document.getElementById('description_container');
-		description.textContent = targetDescription;
+	function updateMetadata(targetUuid) {
+		//TODO Request Metadata
+		console.info("update metadata from Peertube with UUID:", targetUuid);
+		//fetch();
+		var metadataContainer = document.getElementById('metadata_container');
+		metadataContainer.textContent = "";
     }
 
 	function checkPlaybackStatus(status) {
@@ -416,15 +413,13 @@ if ($playlist->template === PLAYLISTTEMPLATE::SLIDER) {
 	$visibleDescription = implode("\n", $visibleLines);
 
 	echo '<p class="video_description" style="color: '.$grid_textcolor.'; font-size: '.$grid_textsize_description.'px;">';
-	echo $visibleDescriptionn;
 
-/*
 	if (!empty($visibleDescription)) {
 		echo $visibleDescription;
 		echo '...';
 	} else {
 		echo 'No description';
-	}*/
+	}
 	echo '</p>';
 	echo '</div>';
 	echo '</div>';
