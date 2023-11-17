@@ -1,11 +1,12 @@
 /* 
 LOCAL DEBUG */
+/* 
  body
   .is-layout-constrained
   > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
   max-width: none !important; 
 }
-
+*/
 
 .playlist_peertube_grid {
   display: flex;
@@ -149,44 +150,58 @@ LOCAL DEBUG */
   background: none;
 }
 
+.video_format {
+  height: 100%;
+  width: 800px;
+}
 
-@media (max-width: 1564px) {
+@media (max-width: 1920px) {
   .video_background {
-    height: 700px;
+    height: 450px;
   }
 
   .video_format {
-    width: 1237px;
+    width: 800px;
+  }
+}
+
+@media (max-width: 1564px) {
+  .video_background {
+    height: 450px;
+  }
+
+  .video_format {
+    width: 800px;
   }
 }
 
 @media (max-width: 1380px) {
   .video_background {
-    height: 600px;
+    height: 350px;
   }
 
   .video_format {
-    width: 1058px;
+    width: 600px;
   }
 }
 
 @media (max-width: 1176px) {
   .video_background {
-    height: 500px;
+    height: 300px;
   }
 
   .video_format {
-    width: 881px;
+    width: 600px;
   }
 }
 
 @media (max-width: 992px) {
   .video_background {
-    height: 400px;
+    height: 230px;
   }
 
   .video_format {
-    width: 702px;
+    width: 400px;
   }
 }
 
@@ -218,10 +233,6 @@ LOCAL DEBUG */
   .video_format {
     width: 250px;
   }
-}
-
-:root {
-  --swiper-theme-color: #e5e5e5 !important;
 }
 /* swiper is not allowed because issue with anouther swiper in wp elementor
 body {
