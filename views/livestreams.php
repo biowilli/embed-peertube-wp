@@ -19,7 +19,7 @@
 <form action="" method="post" id="form_new_pl_pt">
 	<?php wp_nonce_field( 'new_livestream_peertube' ) ?>
 	<b>Add a new Livestream</b><br />
-	<label>Livestream ID: </label><input type="text" name="livestream_id" /> You can find it in the URL of the Livestream URL: https://fair.tube/w/<strong style="color: #00fc00">livestreamid</strong>/videos<br />
+	<label>Livestream ID: </label><input type="text" name="livestream_id" /> You can find it in the URL of the Livestream URL: https://fair.tube/w/<strong style="color: #00fc00">livestreamid</strong><br />
 	<input type="submit" value="Add" />
 </form>
 

@@ -802,7 +802,6 @@ function display_livestream_peertube($atts)
         $livestream = $wpdb->get_row($query);
         if ($livestream) {
             wp_enqueue_script("jquery");
-            echo "$livestream->livestream_id";
             
             if (!empty($livestream->livestream_id)) {
                 
