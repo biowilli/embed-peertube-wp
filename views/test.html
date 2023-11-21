@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Flex-Grid</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        max-width: 100vw;
+        width: 100%;
+        min-height: 100vh;
+        height: 100%;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      .main-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+      }
+
+      .grid-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-start;
+        width: 80%;
+        gap: 1rem;
+      }
+
+      .tile-container {
+        flex: 1;
+        min-width: 250px;
+        max-width: 400px;
+        width: 100%;
+        background-color: antiquewhite;
+      }
+
+      .tile-wrapper {
+        position: relative;
+        width: 100%;
+        padding-bottom: 56%;
+        background-color: aliceblue;
+      }
+
+      .tile-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: aqua;
+      }
+
+       .info {
+        width: 80%;
+        height: 300px;
+
+        background-color:bisque;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="main-container">
+      <div class="grid-container">
+        <div class="tile-container">
+          <div class="tile-wrapper">
+            <div class="tile-content">
+              <iframe width="100%" height="100%" src="https://www.youtube-nocookie.com/embed/_FqH1rqQrQg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+        <div class="tile-container">
+          <div class="tile-wrapper">
+            <div class="tile-content"> Tile 2 </div>
+            <div class="info"></div>
+          </div>
+
+        </div>
+        <div class="tile-container">
+          <div class="tile-wrapper">
+            <div class="tile-content">
+              <iframe width="100%" height="100%" title="Vimeo video player" src="https://player.vimeo.com/video/800791883" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

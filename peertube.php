@@ -52,6 +52,9 @@ function add_peertube_install()
             click int(1) NOT NULL,     
 			template int(11) NOT NULL,
             show_title int(1) NOT NULL,           
+            show_description int(1) NOT NULL,      
+            scroll_video int(1) NOT NULL,      
+            autoplay_video int(1) NOT NULL,      
 			PRIMARY KEY  (id)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 	";
@@ -383,12 +386,15 @@ function playlists_peertube()
                 $query = $wpdb->prepare(
                     "INSERT INTO " .
                         $playlist_peertube_table .
-                        " (`name`, `playlist_id`, `click`, `template`, `show_title` ) VALUES (%s, %s, %d, %d, %d)",
+                        " (`name`, `playlist_id`, `click`, `template`, `show_title`, `autoplay_video`, `scroll_video`, `show_description`) VALUES (%s, %s, %d, %d, %d, %d, %d, %d)",
                     sanitize_text_field($_POST["name"]),
                     $_POST["playlist_id"],
                     (int) $_POST["click"],      
                     (int) $_POST["template"],        
-                    (int) $_POST["show_title"]
+                    (int) $_POST["show_title"],
+                    (int) $_POST["autoplay_video"],      
+                    (int) $_POST["scroll_video"],        
+                    (int) $_POST["show_description"]
                 );
                 $wpdb->query($query);
                 
@@ -397,18 +403,24 @@ function playlists_peertube()
                 $click = $_POST["click"];
                 $template = $_POST["template"];
                 $show_title = $_POST["show_title"];
+                $autoplay_video = $_POST["autoplay_video"];
+                $scroll_video = $_POST["scroll_video"];
+                $show_description = $_POST["show_description"];
 
                 //Nonce verification
                 check_admin_referer("update_pl_peertube_" . $_POST["id"]);
                 $query = $wpdb->prepare(
                     "UPDATE " .
                     $playlist_peertube_table .
-                    " SET `name` = %s, `playlist_id` = %s, `click` = %d,  `template` = %d, `show_title` = %d WHERE id = %d",
+                    " SET `name` = %s, `playlist_id` = %s, `click` = %d,  `template` = %d, `show_title` = %d, `autoplay_video` = %d, `scroll_video` = %d, `show_description` = %d  WHERE id = %d",
                     sanitize_text_field($_POST["name"]),
                     $playlist_id,
                     $click,
                     $template,
                     $show_title,
+                    $autoplay_video,
+                    $scroll_video, 
+                    $show_description,
                     $_POST["id"]
                 );
                 $wpdb->query($query);

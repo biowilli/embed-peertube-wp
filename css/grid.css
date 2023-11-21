@@ -38,28 +38,6 @@
   box-sizing: border-box;
 }
 
-.thumbnail_container_hover {
-  overflow: hidden;
-  position: relative;
-  margin: 0px 0px 0px 0px;
-  transition: transform 0.3s ease-in-out;
-}
-
-.video {
-  position: relative;
-  display: block;
-  transition: transform 500ms;
-  overflow: hidden;
-  height: 225px;
-}
-
-.video:hover {
-  transform: scale(1.1);
-  overflow: visible;
-  z-index: 1;
-  box-shadow: 10px 20px 15px rgba(0, 0, 0, 0.3);
-}
-
 .description_container {
   max-height: 0px;
   transition: max-height 1s;

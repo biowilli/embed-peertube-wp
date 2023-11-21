@@ -14,25 +14,30 @@
 		const SLIDER = "1";
 	}
 	$show_player = false;
-	$playlistId = $playlist->id; //check if u get playlistId from here
 
-	if ($playlistId === null) {
-		$playlistId = $_GET['playlistId'];	
+	//playlist from shortcode
+	$playlistId = $playlist->id;							
+	//playlist from url
+	if ($playlistId === null && isset($_GET['playlistId'])) {
+		$playlistId = $_GET['playlistId'];
+	}
 
-		if ($playlistId) {
+	if ($playlistId) {
+		global $wpdb;
 
-			global $wpdb;
+		$playlist_peertube_table = $wpdb->prefix . "playlists_peertube";
 
-			$playlist_peertube_table = $wpdb->prefix . "playlists_peertube";
+		$query = $wpdb->prepare("SELECT * FROM {$playlist_peertube_table} WHERE id = %d", $playlistId);
+		$playlist = $wpdb->get_row($query);
+		$show_player = true;	
+	}
 
-			$query = $wpdb->prepare(
-				"SELECT * FROM {$playlist_peertube_table} WHERE id = %d",
-				$playlistId
-			);
-			$playlist = $wpdb->get_row($query);
-			$show_player = true;
-	} 
-}
+	//uuid from shortcode
+	$uuid = $uuid->id;							
+	//uuid from url
+	if ($urlUuid === null && isset($_GET['uuid'])) {
+		$urlUuid = $_GET['uuid'];
+	}
 
 	$peertube_url = get_option("pl_peertube_url");
 
@@ -45,7 +50,7 @@
 	//Style Grid
 	$pl_hover_delay = get_option('pl_hover_delay');
 
-	$autoplay = get_option("pl_autoplay"); 
+	$autoplay = $playlist->autoplay_video; // get_option("pl_autoplay"); 
 	$description_textcolor = get_option("pl_description_textcolor"); 
 	$showmore_textcolor = get_option("pl_showmore_textcolor"); 
 
@@ -72,27 +77,34 @@
 
 <?php
 if ($playlist->click === VIDEOLOCATION::SAMEPAGE || $show_player) {
-?>
 
-<div class="control_view">
-	<div class="video_view">
-		<div class="video_background">
-			<div class="video_format">
-				<div class="video_container_iframe" id="video_container_iframe">
+	$description_view = "";
+	if ($playlist->show_description){
+		$description_view = "
+		<div class='description_view' id='description_view'>
+			<p id='description_container' style='color:{$description_textcolor};'></p>
+			<p id='metadata_container' style='color:{$description_textcolor};'></p>
+			<hr class='line' />
+			<button id='read_more_button' onclick='toggleDescription()' style='color:{$showmore_textcolor};'>Mehr anzeigen</button>
+		</div>";
+	}
+
+	$controlView = "
+	<div class='control_view'>
+		<div class='video_view'>
+			<div class='video_background'>
+				<div class='video_format'>
+					<div class='video_container_iframe' id='video_container_iframe'>
+					</div>
 				</div>
 			</div>
+			
+			{$description_view}
 		</div>
-		<div class="description_view" id="description_view">
-			<p id="description_container" style="color: <?php echo $description_textcolor; ?>;"></p>
-			<p id="metadata_container" style="color: <?php echo $description_textcolor; ?>;"></p>
-			<hr class="line" />
+	</div>";
 
-			<button id="read_more_button" onclick="toggleDescription()" style="color: <?php echo $showmore_textcolor; ?>;">Mehr anzeigen</button>
-		</div>
-
-	</div>
-</div>
-	<?php }?>
+	echo $controlView;
+}?>
 	<?php
 if ($playlist->template === PLAYLISTTEMPLATE::GRID) {
 	if ($playlist->show_title) {
@@ -100,8 +112,21 @@ if ($playlist->template === PLAYLISTTEMPLATE::GRID) {
 		echo "<br>";
 	  } }?>
 
-	<div class="playlist_peertube_grid" id="playlist_peertube_grid_<?= $playlistId ?>">	
+<div class="main-container">
+		<div class="blx__grid__container">
+		
 <?php
+$selectedOption = get_option('pl_playbutton_style_grid');
+$button_sprites = [
+				'playbutton_black_grid' => 'embed-peertube-wp/images/playbutton_black.svg',
+				'playbutton_white_grid' => 'embed-peertube-wp/images/playbutton_white.svg',
+				'playbutton_fs1_grid' => 'embed-peertube-wp/images/playbutton_fs1.svg',
+				'playbutton_fs1_2_grid' => 'embed-peertube-wp/images/playbutton_fs1_2.svg'
+			];
+$button_sprite_default = 'embed-peertube-wp/images/playbutton_white.svg';
+
+$playbuttonElement = "<img class='play_grid_button' src='".plugins_url(array_key_exists($selectedOption, $button_sprites) ? $button_sprites[$selectedOption] : $button_sprite_default) . "' />";
+
 if ($playlist->template === "0") {
 
 	foreach($data->data as $video)
@@ -111,85 +136,121 @@ if ($playlist->template === "0") {
 			continue;
 		}
 
-		// videoElement open
+		$gridVideoOnClick = "";
+		if ($playlist->click === VIDEOLOCATION::SAMEPAGE || $show_player) {
+			$gridVideoOnClick .= " onClick='playVideo(\"{$video->video->uuid}\", \"{$autoplay}\")'";
+		} elseif ($playlist->click === VIDEOLOCATION::SEPARATE && !$show_player) {
+			$gridVideoOnClick .= " onClick='playVideoInSeparatePage(\"{$video->video->uuid}\")'";
+		}
 		$videoElement = "
-		<div
-			class='video'
-			style='transition-delay:${pl_hover_delay}ms; transition-delay:${pl_hover_delay}ms; margin-top:${marginTopVideo}px; margin-right:${marginRightVideo}px; margin-bottom:${marginBottomVideo}px; margin-left:${marginLeftVideo}px; border-top-left-radius:${grid_borderradius_top_left}px; border-top-right-radius:${grid_borderradius_top_right}px; border-bottom-left-radius:${grid_borderradius_bottom_left}px; border-bottom-right-radius:${grid_borderradius_bottom_right}px;'
-			>
-		";
+		<div class='blx__grid__item' {$gridVideoOnClick} >
+			<div class='blx__tile__outer_container'>
+				<div class='blx__tile__container' style='background:{$grid_backgroundcolor};'>
+					<div class='blx__tile__wrapper'>
+						<div class='blx__tile__content' style='background:{$grid_backgroundcolor}; transition-delay:${pl_hover_delay}ms; transition-delay:${pl_hover_delay}ms;'>
+							<div class='blx__media__wrapper'>
+								<div class='blx__media__content'>
+									<div class='thumbnail_container'>
+										<img height='100%' width='100%' src='{$peertube_url}{$video->video->previewPath}' />
+										{$playbuttonElement}
+									</div>
+								</div>
+							</div>
+
+							<div class='blx__title__content clamp'>
+								<div class='blx_text_content' style='color:{$grid_textcolor}; font-size:{$grid_textsize_header}px;'>{$video->video->name}</div>
+							</div>
+						</div>
+
+						<div class='blx__tile__drawer' style='color:{$grid_textcolor}; font-size:{$grid_textsize_description}px; background:{$grid_backgroundcolor}; transition-delay:${pl_hover_delay}ms; transition-delay:${pl_hover_delay}ms;'>
+							{$video->video->description}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+			";
 		echo $videoElement;
-
-			//video_container open
-			echo '<div class="video_container" rel="'.$video->video->uuid.'">';
-				$thumbnailContainerHoverElement = "
-				<div
-					class='thumbnail_container_hover' 
-					style='background-color:{$grid_backgroundcolor}; color:{$grid_textcolor}; border-top-left-radius:{$hover_grid_borderradius_top_left}px; border-top-right-radius:{$hover_grid_borderradius_top_right}px; border-bottom-left-radius:{$hover_grid_borderradius_bottom_left}px; border-bottom-right-radius: {$hover_grid_borderradius_bottom_right}px;'";
-					if ($playlist->click === VIDEOLOCATION::SAMEPAGE || $show_player) {
-						$thumbnailContainerHoverElement .= " onClick='playVideo(\"{$video->video->uuid}\", \"{$autoplay}\")'";
-					} elseif ($playlist->click === VIDEOLOCATION::SEPARATE && !$show_player) {
-						$thumbnailContainerHoverElement .= " onClick='playVideoInSeparatePage(\"{$video->video->uuid}\")'";
-					}
-					
-					$thumbnailContainerHoverElement .= ">";
-					echo $thumbnailContainerHoverElement;
-
-						echo '<div class="thumbnail_container">';
-							echo '<img class="thumbnail" src="'.$peertube_url.$video->video->previewPath.'" />';
-					
-							$selectedOption = get_option('pl_playbutton_style_grid');
-							$button_sprites = [
-								'playbutton_black_grid' => 'embed-peertube-wp/images/playbutton_black.svg',
-								'playbutton_white_grid' => 'embed-peertube-wp/images/playbutton_white.svg',
-								'playbutton_fs1_grid' => 'embed-peertube-wp/images/playbutton_fs1.svg',
-								'playbutton_fs1_2_grid' => 'embed-peertube-wp/images/playbutton_fs1_2.svg'
-							];
-							$button_sprite_default = 'embed-peertube-wp/images/playbutton_white.svg';
-
-							$playbuttonElement = "<img class='play_grid_button' src='".plugins_url(array_key_exists($selectedOption, $button_sprites) ? $button_sprites[$selectedOption] : $button_sprite_default) . "' />";
-							echo $playbuttonElement;
-					
-						echo '</div>'; //thumbnail_container close
-
-
-					echo '<div class="information_container">';
-						$informationContainerELement = "<div class='header_container'>
-															<h3 style='color:{$grid_textcolor}; font-size:{$grid_textsize_header}px;'>{$video->video->name}</h3>
-														</div>";
-						echo $informationContainerELement;
-					
-						echo '<div class="description_container">';
-							echo '<p class="video_description" style="color: '.$grid_textcolor.'; font-size: '.$grid_textsize_description.'px;">';
-							echo $video->video->description;
-							echo '</p>'; 
-						echo '</div>'; //close description_container 
-					echo '</div>'; //close information_container
-				echo '</div>'; // Close thumbnail_container_hover
-			echo '</div>'; // Close video_container
-		echo '</div>'; // Close videoElement
 	}
 }
 ?>
 </div>
-
-
-<script src="https://unpkg.com/@peertube/embed-api/build/player.min.js"></script>
+</div> 
+</div>
 <script>
 
-function toggleDescription() {
-    var container = document.getElementById("description_container");
-    var button = document.getElementById("read_more_button");
+		const dStore = new Map([
+            ['resize_lock', false],
+			['resize_value', { width: 0, height: 0 }],
+            ['elements', []],
+            ['elements_map', new Map()]
+        ]);
+		// Get all elements with class 'clamp' and store them in a Map
+		for (const element of document.getElementsByClassName('clamp')) {
+			const rects = element.getClientRects();
+			const child = element.firstElementChild;
 
-    if (container.style.maxHeight) {
-        container.style.maxHeight = null;
-        button.innerHTML = "Mehr anzeigen";
-    } else {
-        container.style.maxHeight = container.scrollHeight + "px";
-        button.innerHTML = "Weniger anzeigen";
-    }
-}
+			const obj = {
+				element: element,
+				child: child,
+				content: child.innerHTML,
+				height: rects[0].height
+			};
+			dStore.get('elements').push(obj);
+			dStore.get('elements_map').set(element, obj);
+		}
+		const re_removeLastWord = new RegExp('[\s\n\r]+[^\s\n\r]+[\s\n\r]*$', 'i');
 
+		// Ellipsify text
+		const ellipsify = () => {
+			for (const obj of dStore.get('elements')) {
+				let content = obj.content;
+				obj.child.innerHTML = content;
+
+				let rect = obj.child.getClientRects()[0];
+				while (rect.height > obj.height) {
+					content = content.replace(re_removeLastWord, '');
+					obj.child.innerHTML = content + '...';
+					rect = obj.child.getClientRects()[0];
+				}
+			}
+		}
+
+		// Throttle resize events
+		const throttleResizeEvents = (evtType) => {
+            if (!dStore.get('resize_lock')) {
+                dStore.set('resize_lock', true);
+                window.requestAnimationFrame(() => {
+					// Ellipsify text
+					ellipsify();
+
+					// Dispatch throttled resize event
+                    window.dispatchEvent(new CustomEvent('blx-resize', {
+                        detail: {
+                            size: dStore.get('resize_value')
+                        }
+                    }));
+                    dStore.set('resize_lock', false);
+                });
+            }
+        };
+		// Add event listener for resize event
+        window.addEventListener('resize', (evt) => {
+            dStore.set('resize_value', {
+                width: window.innerWidth,
+                height: window.innerHeight
+            });
+            throttleResizeEvents('resize');
+        });
+
+		// Initial ellipsifying of text
+		ellipsify();
+
+	</script>
+</div>
+<script src="https://unpkg.com/@peertube/embed-api/build/player.min.js"></script>
+<script>
+		console.log("failed expression");
 
 <?php
 	$peertube_playlist = "var peertube_playlist=["; // Variable to store the Peertube playlist
@@ -206,7 +267,7 @@ function toggleDescription() {
 		}
 
 		$peertube_playlist .= "{";
-		$peertube_playlist .= "index:'".$peertube_count."',"; // Video UUID		
+		$peertube_playlist .= "index:'".$peertube_count."',"; // Video index		
 		$peertube_playlist .= "uuid:'".$video->video->uuid."',"; // Video UUID
 		$peertube_playlist .= "title:'".str_replace("'", "\'", $video->video->name )."',"; // Video title
 		$peertube_playlist .= "preview:'".$peertube_url.$video->video->previewPath."',"; // Video preview image
@@ -219,15 +280,35 @@ function toggleDescription() {
 	$peertube_playlist .= "];";
 
 	echo $peertube_playlist;
+    echo "var uuid = " . ($urlUuid ? "'" . $urlUuid . "'" : "peertube_playlist[0].uuid") . ";"; // If no UUID is present, use the first UUID in the array
+    echo "console.log('videouuid:', uuid);";
+
+    echo "var autoplay = " . get_option("pl_autoplay") . ";";
+    echo "console.log('general autoplay from settings:', autoplay);";
+
+    echo "var initalAutoplay = " . $playlist->autoplay_video . ";";
+    echo "console.log('autoplay_video inital:', initalAutoplay);";
+
+	echo "var scrollToVideo = " . $playlist->scroll_video . ";";
+    echo "console.log('scrollToVideo inital:', scrollToVideo);";
 ?>
-	function playVideoInSeparatePage(uuid){
-		var siteUrl = '<?php echo site_url(); ?>';
-        // Redirect to the separate page with the video URL as a parameter
-        window.location.href = siteUrl + '/index.php/playlist/?uuid=' + encodeURIComponent(uuid)+ '&playlistId=' + encodeURIComponent(<?= $playlist->id  ?>) ;
-	}
 
 	var currentlyPlayingVideo = 0;
-	function playVideo(uuid, autoplay) {
+
+	function playVideoInSeparatePage(uuid) {
+		var siteUrl = '<?php echo site_url(); ?>';
+		// Redirect to the separate page with the video URL as a parameter
+		window.location.href = siteUrl + '/index.php/playlist/?uuid=' + encodeURIComponent(uuid) + '&playlistId=' + encodeURIComponent('<?php echo $playlist->id?>');
+		
+		//TODO Update the browser URL only when its displayed on a seperate page
+		/*
+			var currentUrl = new URL(window.location.href);
+			currentUrl.searchParams.set('uuid', uuid);
+			history.pushState({}, '', currentUrl.toString());
+			*/
+	}
+
+	function playVideo(uuid, autoplay, inital = false) {
 
 		var targetEmbed;
 		var targetIndex;
@@ -239,53 +320,70 @@ function toggleDescription() {
 				targetEmbed = video.embed;
 				targetDescription = video.description;
 				targetIndex = video.index;
-				return; 
+				return;
 			}
 		});
 
-		if(targetEmbed == undefined || targetIndex == undefined || targetUuid == undefined){
+		if (targetEmbed == undefined || targetIndex == undefined || targetUuid == undefined) {
 			return;
 		}
 
 		currentlyPlayingVideo = targetIndex;
-        // Setze die Video-URL als src-Attribut des <iframe>-Elements 350px
-		var iframe = '<iframe width="100%" height="100%" src="'+ targetEmbed + '?autoplay='+ autoplay + '&rel=0&peertubeLink=0&api=1" frameborder="0" allowfullscreen></iframe>';
+		// Setze die Video-URL als src-Attribut des <iframe>-Elements 350px
+		var iframe = '<iframe width="100%" height="100%" src="' + targetEmbed + '?autoplay=' + autoplay + '&rel=0&peertubeLink=0&api=1" frameborder="0" allowfullscreen></iframe>';
 
 		// scroll 2 iframe/player
-		var iframeElement = document.getElementById('video_container_iframe');
-		if (iframeElement) {
-			window.scrollTo({
-				top: iframeElement.offsetTop,
-				behavior: 'smooth'
-			});
+		if (scrollToVideo && !inital) {
+			var iframeElement = document.getElementById('video_container_iframe');
+			if (iframeElement) {
+				window.scrollTo({
+					top: iframeElement.offsetTop,
+					behavior: 'smooth'
+				});
+			}
 		}
 
-		jQuery('#video_container_iframe').html(iframe);
 
-		// Update the browser URL without page reload
-		var currentUrl = new URL(window.location.href);
-        currentUrl.searchParams.set('uuid', uuid);
-        history.pushState({}, '', currentUrl.toString());
+
+		jQuery('#video_container_iframe').html(iframe);
 
 		updateStyle(targetIndex);
 		updateDescription(targetDescription);
 		updateMetadata(targetUuid);
-		initializePlayer(targetIndex, autoplay);
+		//initializePlayer(targetIndex, autoplay);
+	}
+
+	function toggleDescription() {
+		var container = document.getElementById("description_container");
+		var button = document.getElementById("read_more_button");
+
+		if (container.style.maxHeight) {
+			container.style.maxHeight = null;
+			button.innerHTML = "Mehr anzeigen";
+		} else {
+			container.style.maxHeight = container.scrollHeight + "px";
+			button.innerHTML = "Weniger anzeigen";
+		}
 	}
 
 	function updateDescription(targetDescription) {
-		console.info("update Description from Peertube:", targetDescription);
 		var videoDescriptionContainer = document.getElementById('description_container');
-		videoDescriptionContainer.textContent = targetDescription;
-    }
+		if (videoDescriptionContainer && targetDescription) {
+			console.info("update Description from Peertube:", targetDescription);
+			videoDescriptionContainer.textContent = targetDescription;
+		}
+	}
 
 	function updateMetadata(targetUuid) {
 		//TODO Request Metadata
-		console.info("update metadata from Peertube with UUID:", targetUuid);
+		var targetMetadata = undefined;
 		//fetch();
 		var metadataContainer = document.getElementById('metadata_container');
-		metadataContainer.textContent = "";
-    }
+		if (metadataContainer && targetMetadata) {
+			console.info("update metadata from Peertube with UUID:", targetUuid);
+			metadataContainer.textContent = "";
+		}
+	}
 
 	function checkPlaybackStatus(status) {
 		if (status.playbackState == "ended") {
@@ -293,199 +391,37 @@ function toggleDescription() {
 				var nextIndex = (currentlyPlayingVideo + 1) % peertube_playlist.length;
 				var nextVideo = peertube_playlist[nextIndex];
 				console.info("play new video: ", nextVideo.uuid)
-				var autoplay = <?php
-					echo get_option("pl_autoplay"); 
-				?>;
 				playVideo(nextVideo.uuid, autoplay);
 			}
 		}
 	}
 
 	function updateStyle(selectedIndex) {
-		var videos = document.querySelectorAll('.video');
-		var playGridButton = document.querySelector('.play_grid_button');
-
+		var videos = document.querySelectorAll('.blx__grid__item');
 		videos.forEach(function(video, index) {
-			if (index != selectedIndex) {
-				video.classList.add('inactive'); 		// Remove the class from the playing video
+			if (index == selectedIndex) {
+				video.classList.add('active'); // Remove the class from the playing video
+				video.querySelector('.play_grid_button').style.display = 'block';
 			} else {
-				video.classList.remove('inactive'); 	// Add a class to apply gray overlay
+				video.classList.remove('active'); // Add a class to apply gray overlay
+				video.querySelector('.play_grid_button').style.display = 'none';
 			}
 		});
 	}
 
-	const PeerTubePlayer = window['PeerTubePlayer']
+	const PeerTubePlayer = window['PeerTubePlayer'];
 	async function initializePlayer() {
-		console.info("initializing Player")
+		console.info("Initializing Player")
 		var iframeElement = document.querySelector('iframe');
 		var player = new PeerTubePlayer(iframeElement);
 		await player.ready;
 		console.info("Player ready");
-		player.addEventListener("playbackStatusUpdate", checkPlaybackStatus); 
-		}
-
-    jQuery(document).ready(function(){
-
-		var targetUuid = "<?php
-			if (isset($_GET['uuid'])) {
-				echo $_GET['uuid'];
-			} else {
-				echo "";
-			}
-		?>";
-
-		var autoplay = <?php
-			echo get_option("pl_autoplay"); 
-		?>;
-
-		console.info("jQuery ready start player with ID:", targetUuid);
-		if (targetUuid === ""){
-			playVideo(peertube_playlist[0].uuid, autoplay);
-			return;
-		}
-		
-		playVideo(targetUuid, autoplay);
-    });
-</script>
-
-<?php 
-if ($playlist->template === PLAYLISTTEMPLATE::SLIDER) {
-	?>
-<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-<!--- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" /> --->
-<div class="container_silder">
-  <p><?php 
-  if ($playlist->show_title) {
-	echo $playlist->name; 
-  }
- ?></p>
-<div class="swiper-container">
-  <div class="swiper-wrapper">
-	<?php 
-	foreach($data->data as $video)
-	{
-	if (is_null($video) || is_null($video->video) || is_null($video->video->name)){
-		continue;
-	}
-	echo '<div class="swiper-slide" id="swiper-slide">';
-	echo '<div class="swiper-box">';
-	echo '<div class="video" style="';
-	echo 'transition-delay:' . $pl_hover_delay   . 'ms; ';
-	echo 'margin-top: ' . $marginTopVideo . 'px; ';
-	echo 'margin-right: ' . $marginRightVideo . 'px; ';
-	echo 'margin-bottom: ' . $marginBottomVideo . 'px; ';
-	echo 'margin-left: ' . $marginLeftVideo . 'px; ';
-	echo 'border-top-left-radius: ' . $grid_borderradius_top_left . 'px; ';
-    echo 'border-top-right-radius: ' . $grid_borderradius_top_right . 'px; ';
-    echo 'border-bottom-left-radius: ' . $grid_borderradius_bottom_left . 'px; ';
-    echo 'border-bottom-right-radius: ' . $grid_borderradius_bottom_right . 'px; ';
-	echo '">';
-	echo '<div class="video_container" rel="'.$video->video->uuid.'">';
-	echo '<div class="thumbnail_container_hover" style="';
-	echo 'background-color: ' . $grid_backgroundcolor . '; ';
-	echo 'color: ' . $grid_textcolor . '; ';
-	echo 'border-top-left-radius: ' . $hover_grid_borderradius_top_left . 'px; ';
-    echo 'border-top-right-radius: ' . $hover_grid_borderradius_top_right . 'px; ';
-    echo 'border-bottom-left-radius: ' . $hover_grid_borderradius_bottom_left . 'px; ';
-    echo 'border-bottom-right-radius: ' . $hover_grid_borderradius_bottom_right . 'px; ';
-	echo '"';
-	if ($playlist->click === VIDEOLOCATION::SAMEPAGE || $show_player){
-		echo 'onClick="playVideo(\'' . $video->video->uuid . '\',\'' . $autoplay . '\')"';
+		player.addEventListener("playbackStatusUpdate", checkPlaybackStatus);
 	}
 
-	if ($playlist->click === VIDEOLOCATION::SEPARATE && !$show_player){
-		echo 'onClick="playVideoInSeparatePage(\'' . $video->video->uuid . '\')"';
-	}
-
-	echo '>';
-	echo '<div class="thumbnail_container">';
-
-	echo '<img class="thumbnail" src="'.$peertube_url.$video->video->previewPath.'" alt="" />';
-	echo '<div class="information_container">';
-	echo '<div class="header_container">';
-	echo '<h3 style="color: '.$grid_textcolor.'; font-size: '.$grid_textsize_header.'px;">'.$video->video->name.'</h3>';
-	echo '</div>';
-	echo '<div class="description_container">';
+	playVideo(uuid, autoplay, true);
+	initializePlayer();
+	</script>
 
 
-	$descriptionLines = explode("\n", $video->video->description);
-	$visibleLines = array_slice($descriptionLines, 0, 3);
-	$visibleDescription = implode("\n", $visibleLines);
 
-	echo '<p class="video_description" style="color: '.$grid_textcolor.'; font-size: '.$grid_textsize_description.'px;">';
-
-	if (!empty($visibleDescription)) {
-		echo $visibleDescription;
-		echo '...';
-	} else {
-		echo 'No description';
-	}
-	echo '</p>';
-	echo '</div>';
-	echo '</div>';
-	echo '</div>';
-	
-	echo '</div>';
-  	echo '</div>';
-	echo '</div>';
-	echo '</div>';
-	echo '</div>';
-
-}?>
-</div>
-</div>
-</div>
-  <script>
-	const swiper = new Swiper(".swiper-container", {
-	slidesPerView: 2,
-	slidesPerGroup: 1,
-	centeredSlides: false,
-	loop: false,
-	navigation: {
-			nextEl: '.swiper-button-next',
-			prevEl: '.swiper-button-prev',
-		},
-	breakpoints: {
-		// when window width is >= 600px
-		600: {
-		slidesPerView: 2,
-		slidesPerGroup: 2,
-		spaceBetween: 5,
-		centeredSlides: true
-		
-		},
-		// when window width is >= 900px
-		900: {
-		slidesPerView: 3,
-		slidesPerGroup: 3,
-		spaceBetween: 5,
-		centeredSlides: false
-		
-		},
-		// when window width is >= 1200px
-		1200: {
-		slidesPerView: 4,
-		slidesPerGroup: 4,
-		spaceBetween: 5,
-		centeredSlides: false
-		},
-		
-		// when window width is >= 1500px
-		1500: {
-		slidesPerView: 5,
-		slidesPerGroup: 5,
-		spaceBetween: 5,
-		centeredSlides: false
-		},
-		
-		// when window width is >= 1800px
-		1800: {
-		slidesPerView: 6,
-		slidesPerGroup: 6,
-		spaceBetween: 5,
-		centeredSlides: false
-		}
-	}
-	});
-</script>
-<?php }?>
