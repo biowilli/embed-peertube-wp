@@ -27,15 +27,7 @@ $grid_textcolor = get_option("pl_grid_textcolor");
 $grid_textsize_header = get_option("pl_grid_textsize_header"); 
 $grid_textsize_description = get_option("pl_grid_textsize_description"); 
 
-$marginTopVideo = get_option("pl_grid_margin_top"); 
-$marginBottomVideo = get_option("pl_grid_margin_bottom"); 
-$marginRightVideo = get_option("pl_grid_margin_right"); 
-$marginLeftVideo = get_option("pl_grid_margin_left"); 
-
-$grid_borderradius_top_left = get_option('pl_grid_borderradius_top_left');
-$grid_borderradius_top_right = get_option('pl_grid_borderradius_top_right');
-$grid_borderradius_bottom_left = get_option('pl_grid_borderradius_bottom_left');
-$grid_borderradius_bottom_right = get_option('pl_grid_borderradius_bottom_right');
+$marginTopVideo = get_option("pl_grid_gap"); 
 
 $hover_grid_borderradius_top_left = get_option('pl_hover_grid_borderradius_top_left');
 $hover_grid_borderradius_top_right = get_option('pl_hover_grid_borderradius_top_right');
@@ -54,7 +46,7 @@ foreach($data->data as $video)
 	echo  'transition-delay:' . $pl_hover_delay   . 'ms; ';
 	echo 'margin-top: ' . $marginTopVideo . 'px; ';
 	echo 'margin-right: ' . $marginRightVideo . 'px; ';
-	echo 'margin-bottom: ' . $marginBottomVideo . 'px; ';
+	echo 'margin-bottom: ' . $max_column . 'px; ';
 	echo 'margin-left: ' . $marginLeftVideo . 'px; ';
 	echo 'border-top-left-radius: ' . $grid_borderradius_top_left . 'px; ';
     echo 'border-top-right-radius: ' . $grid_borderradius_top_right . 'px; ';

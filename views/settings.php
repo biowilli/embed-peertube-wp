@@ -91,107 +91,23 @@
     <h3>Grid-Margin</h3>
     <table class="form-table">
         <tr valign="top">
-            <th scope="row">Grid-Margin-top:</th>
+            <th scope="row">Grid-Gap:</th>
             <td>
-                <input type="text" name="pl_grid_margin_top" value="<?php echo esc_attr( get_option('pl_grid_margin_top') ); ?>" />
+                <input type="text" name="pl_grid_gap" value="<?php echo esc_attr( get_option('pl_grid_gap') ); ?>" />
                 <span>px</span> 
             </td>
         </tr>
-        <tr valign="top">
-            <th scope="row">Grid-Margin-bottom:</th>
-            <td>
-                <input type="text" name="pl_grid_margin_bottom" value="<?php echo esc_attr( get_option('pl_grid_margin_bottom') ); ?>" />
-                <span>px</span> 
-            </td>
-        </tr>
-        <tr valign="top">
-            <th scope="row">Grid-Margin-right:</th>
-            <td>
-                <input type="text" name="pl_grid_margin_right" value="<?php echo esc_attr( get_option('pl_grid_margin_right') ); ?>" />
-                <span>px</span> 
-            </td>
-        </tr>
-        <tr valign="top">
-            <th scope="row">Grid-Margin-left:</th>
-            <td>
-                <input type="text" name="pl_grid_margin_left" value="<?php echo esc_attr( get_option('pl_grid_margin_left') ); ?>" />
-                <span>px</span> 
-            </td>
-        </tr>
-
     </table>
-<h3>Grid-Border-Radius</h3>
-    <table class="form-table">
-    <tr valign="top">
-        <th scope="row">Grid-Border-radius (Top-left):</th>
-        <td>
-            <input type="text" name="pl_grid_borderradius_top_left" value="<?php echo esc_attr( get_option('pl_grid_borderradius_top_left') ); ?>" />
-            <span>px</span> 
-        </td>
-    </tr>
-    <tr valign="top">
-        <th scope="row">Grid-Border-radius (Top-right):</th>
-        <td>
-            <input type="text" name="pl_grid_borderradius_top_right" value="<?php echo esc_attr( get_option('pl_grid_borderradius_top_right') ); ?>" />
-            <span>px</span> 
-        </td>
-    </tr>
-    <tr valign="top">
-        <th scope="row">Grid-Border-radius (Bottom-left):</th>
-        <td>
-            <input type="text" name="pl_grid_borderradius_bottom_left" value="<?php echo esc_attr( get_option('pl_grid_borderradius_bottom_left') ); ?>" />
-            <span>px</span> 
-        </td>
-    </tr>
-    <tr valign="top">
-        <th scope="row">Grid-Border-radius (Bottom-right):</th>
-        <td>
-            <input type="text" name="pl_grid_borderradius_bottom_right" value="<?php echo esc_attr( get_option('pl_grid_borderradius_bottom_right') ); ?>" />
-            <span>px</span> 
-        </td>
-    </tr>
-</table>
-<h3>Hover-Grid-Border-Radius</h3>
-    <table class="form-table">
-    <tr valign="top">
-    <th scope="row">Hover-Grid-Border-radius (Top-left):</th>
-        <td>
-            <input type="text" name="pl_hover_grid_borderradius_top_left" value="<?php echo esc_attr( get_option('pl_hover_grid_borderradius_top_left') ); ?>" />
-            <span>px</span> 
-        </td>
-    </tr>
-    <tr valign="top">
-    <th scope="row">Hover-Grid-Border-radius (Top-right):</th>
-        <td>
-            <input type="text" name="pl_hover_grid_borderradius_top_right" value="<?php echo esc_attr( get_option('pl_hover_grid_borderradius_top_right') ); ?>" />
-            <span>px</span> 
-        </td>
-    </tr>
-    <tr valign="top">
-    <th scope="row">Hover-Grid-Border-radius (Bottom-left):</th>
-        <td>
-            <input type="text" name="pl_hover_grid_borderradius_bottom_left" value="<?php echo esc_attr( get_option('pl_hover_grid_borderradius_bottom_left') ); ?>" />
-            <span>px</span> 
-        </td>
-    </tr>
-    <tr valign="top">
-    <th scope="row">Hover-Grid-Border-radius (Bottom-right):</th>
-        <td>
-            <input type="text" name="pl_hover_grid_borderradius_bottom_right" value="<?php echo esc_attr( get_option('pl_hover_grid_borderradius_bottom_right') ); ?>" />
-            <span>px</span>       
-        </td>
-    </tr>
-</table>
-<h3>Hover-Grid-Delay</h3>
-    <table class="form-table">
-    <tr valign="top">
-    <th scope="row">Hover-Grid-Deslay:</th>
-        <td>
-            <input type="text" name="pl_hover_delay" value="<?php echo esc_attr( get_option('pl_hover_delay') ); ?>" />
-            <span>ms</span>
-        </td>
-    </tr>
-</table>
+    <h3>Hover-Grid-Delay</h3>
+        <table class="form-table">
+        <tr valign="top">
+        <th scope="row">Hover-Grid-Deslay:</th>
+            <td>
+                <input type="text" name="pl_hover_delay" value="<?php echo esc_attr( get_option('pl_hover_delay') ); ?>" />
+                <span>ms</span>
+            </td>
+        </tr>
+    </table>
 
     <?php submit_button(); ?>
 

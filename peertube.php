@@ -185,11 +185,7 @@ function register_playlist_peertube_settings()
     add_option('playbutton_fs1_playlist');
     add_option('playbutton_fs1_2_playlist');
 
-    add_option("pl_grid_margin_top", 10); 
-    add_option("pl_grid_margin_bottom", 10); 
-    add_option("pl_grid_margin_right", 10); 
-    add_option("pl_grid_margin_left", 10); 
-    add_option("pl_grid_borderradius", 10);
+    add_option("pl_grid_gap", 0); 
     add_option('pl_grid_borderradius_top_left');
     add_option('pl_grid_borderradius_top_right');
     add_option('pl_grid_borderradius_bottom_left');
@@ -231,19 +227,7 @@ function display_peertube_settings()
         update_option('playbutton_fs1_playlist', sanitize_text_field($_POST['playbutton_fs1_playlist']));
         update_option('playbutton_fs1_2_playlist', sanitize_text_field($_POST['playbutton_fs1_2_playlist']));
 
-        update_option('pl_grid_margin_top', absint($_POST['pl_grid_margin_top']));
-        update_option('pl_grid_margin_bottom', absint($_POST['pl_grid_margin_bottom']));
-        update_option('pl_grid_margin_right', absint($_POST['pl_grid_margin_right']));
-        update_option('pl_grid_margin_left', absint($_POST['pl_grid_margin_left']));
-        update_option('pl_grid_borderradius', absint($_POST['pl_grid_borderradius']));
-        update_option('pl_grid_borderradius_top_left', absint($_POST['pl_grid_borderradius_top_left']));
-        update_option('pl_grid_borderradius_top_right', absint($_POST['pl_grid_borderradius_top_right']));
-        update_option('pl_grid_borderradius_bottom_left', absint($_POST['pl_grid_borderradius_bottom_left']));
-        update_option('pl_grid_borderradius_bottom_right', absint($_POST['pl_grid_borderradius_bottom_right']));
-        update_option('pl_hover_grid_borderradius_top_left', absint($_POST['pl_hover_grid_borderradius_top_left']));
-        update_option('pl_hover_grid_borderradius_top_right', absint($_POST['pl_hover_grid_borderradius_top_right']));
-        update_option('pl_hover_grid_borderradius_bottom_left', absint($_POST['pl_hover_grid_borderradius_bottom_left']));
-        update_option('pl_hover_grid_borderradius_bottom_right', absint($_POST['pl_hover_grid_borderradius_bottom_right']));
+        update_option('pl_grid_gap', absint($_POST['pl_grid_gap']));
 
         update_option('pl_hover_delay', sanitize_text_field($_POST['pl_hover_delay']));
     } else {

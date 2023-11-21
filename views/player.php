@@ -20,6 +20,7 @@
 	//playlist from url
 	if ($playlistId === null && isset($_GET['playlistId'])) {
 		$playlistId = $_GET['playlistId'];
+		$show_player = true;
 	}
 
 	if ($playlistId) {
@@ -29,7 +30,7 @@
 
 		$query = $wpdb->prepare("SELECT * FROM {$playlist_peertube_table} WHERE id = %d", $playlistId);
 		$playlist = $wpdb->get_row($query);
-		$show_player = true;	
+	
 	}
 
 	//uuid from shortcode
@@ -59,20 +60,8 @@
 	$grid_textsize_header = get_option("pl_grid_textsize_header"); 
 	$grid_textsize_description = get_option("pl_grid_textsize_description"); 
 
-	$marginTopVideo = get_option("pl_grid_margin_top"); 
-	$marginBottomVideo = get_option("pl_grid_margin_bottom"); 
-	$marginRightVideo = get_option("pl_grid_margin_right"); 
-	$marginLeftVideo = get_option("pl_grid_margin_left"); 
 
-	$grid_borderradius_top_left = get_option('pl_grid_borderradius_top_left');
-	$grid_borderradius_top_right = get_option('pl_grid_borderradius_top_right');
-	$grid_borderradius_bottom_left = get_option('pl_grid_borderradius_bottom_left');
-	$grid_borderradius_bottom_right = get_option('pl_grid_borderradius_bottom_right');
-
-	$hover_grid_borderradius_top_left = get_option('pl_hover_grid_borderradius_top_left');
-	$hover_grid_borderradius_top_right = get_option('pl_hover_grid_borderradius_top_right');
-	$hover_grid_borderradius_bottom_left = get_option('pl_hover_grid_borderradius_bottom_left');
-	$hover_grid_borderradius_bottom_right = get_option('pl_hover_grid_borderradius_bottom_right');
+	$gridgap = get_option("pl_grid_gap"); 
 	?> 
 
 <?php
@@ -113,7 +102,7 @@ if ($playlist->template === PLAYLISTTEMPLATE::GRID) {
 	  } }?>
 
 <div class="main-container">
-		<div class="blx__grid__container">
+		<div class="blx__grid__container" style="column-gap:<?php echo $gridgap ?>px; row-gap:<?php echo $gridgap ?>px; max-columns:<?php echo $max_column ?>">
 		
 <?php
 $selectedOption = get_option('pl_playbutton_style_grid');
@@ -397,13 +386,13 @@ if ($playlist->template === "0") {
 	}
 
 	function updateStyle(selectedIndex) {
-		var videos = document.querySelectorAll('.blx__grid__item');
+		var videos = document.querySelectorAll('.blx__tile__outer_container');
 		videos.forEach(function(video, index) {
 			if (index == selectedIndex) {
-				video.classList.add('active'); // Remove the class from the playing video
+				video.style.filter = "grayscale(100%)";
 				video.querySelector('.play_grid_button').style.display = 'block';
 			} else {
-				video.classList.remove('active'); // Add a class to apply gray overlay
+				video.style.filter = "none";
 				video.querySelector('.play_grid_button').style.display = 'none';
 			}
 		});
