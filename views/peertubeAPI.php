@@ -1,7 +1,7 @@
 <?php
 
 function getVideoChannelVideos($channelId) {
-//TODO noch fertig machen
+
 	if (!is_numeric($videoId) || is_null($videoId)) {
 		return "Missing video ID!";
 	}
