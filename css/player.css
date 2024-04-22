@@ -1,0 +1,104 @@
+/* 
+LOCAL DEBUG 
+ body
+  .is-layout-constrained
+  > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+  max-width: none !important; /*
+}
+*/
+
+.control_view {
+  display: flex;
+}
+
+.video_view {
+  width: 60%;
+}
+
+.playlist_view {
+  width: 40%;
+}
+
+.playlist_container {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.playlist_element {
+  list-style: none;
+}
+
+.playlist_item {
+  display: flex;
+  border: 1px solid silver;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  margin-bottom: 5px;
+}
+
+.playlist_item:hover {
+  background-color: #dadada;
+  cursor: pointer;
+}
+
+.playlist_item img {
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.control_view {
+  display: flex;
+}
+
+.playlist_view {
+  width: 40%;
+}
+
+.playlist_container {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.playlist_element {
+  list-style: none;
+}
+
+.playlist_element:hover {
+  background-color: #dadada;
+  cursor: pointer;
+}
+
+.playlist_item {
+  display: flex;
+  align-items: center;
+  margin: 0 0 0 2px;
+  box-shadow: 0px 2px 4px rgba(0, 100, 0, 0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playlist_item img {
+  margin: 10px;
+}
+
+.video-container {
+  min-width: 720px;
+}
+
+/* Media Query für kleinere Bildschirmgrößen */
+@media (max-width: 1024px) {
+  .control_view {
+    flex-direction: column;
+  }
+
+  .video_view {
+    width: 100%;
+  }
+
+  .playlist_view {
+    width: 100%;
+  }
+}

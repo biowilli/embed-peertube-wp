@@ -1,0 +1,88 @@
+
+/*LOCAL DEBUG */
+ body
+  .is-layout-constrained
+  > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+  max-width: none !important; 
+}
+
+
+.playlist_peertube_grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.header_container h3 {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.header_container {
+  display: block;
+  min-height: 50px;
+}
+
+.header_container h3 {
+  margin: 0px;
+  font-weight: bold;
+}
+
+.video_description {
+  margin: 0px;
+}
+
+.video_container {
+  position: relative;
+  max-width: 320px;
+  padding: 1x;
+  box-sizing: border-box;
+}
+
+.description_container {
+  max-height: 0px;
+  transition: max-height 1s;
+  -webkit-transition: max-height 1s;
+  -moz-transition: max-height 1s;
+  -ms-transition: max-height 1s;
+  -o-transition: max-height 1s;
+  transition: max-height 1s;
+  display: block;
+}
+
+.description_container {
+  max-height: 0px;
+  transition: max-height 1s;
+  -webkit-transition: max-height 1s;
+  -moz-transition: max-height 1s;
+  -ms-transition: max-height 1s;
+  -o-transition: max-height 1s;
+  transition: max-height 1s;
+  display: block;
+}
+
+.video:hover .description_container {
+  max-height: 80px;
+}
+
+.information_container {
+  padding: 3px 4px;
+  box-shadow: 10px 20px 15px rgba(0, 0, 0, 0.3);
+}
+
+.thumbnail_container {
+  position: relative;
+}
+
+.thumbnail {
+  width: 100%;
+  height: auto;
+}
+
+.play_video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+}
