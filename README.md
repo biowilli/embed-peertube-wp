@@ -50,7 +50,7 @@ Before deploying it, please ensure which version of the plugin is installed and 
 
 Zip it and upload it to WP.
 
-- zip -r v1.8.0embed-peertube-wp.zip ./embed-peertube-wp
+zip -r v2_embed-peertube-wp_v1.8.1_metadata.zip ./../embed-peertube-wp
 
 ### PS: it only works with public channels and playlists.
 
