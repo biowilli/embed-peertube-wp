@@ -1,3 +1,13 @@
+**Contributors:** fairkom / biowilli  
+**Donate link:** [https://www.fairkom.eu/](https://www.fairkom.eu/)  
+**Tags:** channel, playlist, peertube, video, grid, slider, list, peertube playlist, playlist peertube, peertube plugin, video playlist, peertube player, peertube integration, peertube api, player video, video integration, peertube embed, channels embed  
+**Requires at least:** 3.5  
+**Tested up to:** 6.1  
+**Requires PHP:** 5.6  
+**Stable tag:** 2.0.0  
+**License:** GPLv3 or later  
+**License URI:** [http://www.gnu.org/licenses/gpl-2.0.html](http://www.gnu.org/licenses/gpl-2.0.html)
+
 # Embed Peertube Playlists and Livestreams
 
 Embed Peertube playlists and livestreams on wordpress.
@@ -50,16 +60,6 @@ Before deploying it, please ensure which version of the plugin is installed and 
 
 Zip it and upload it to WP.
 
-zip -r v2_embed-peertube-wp_v1.8.1_metadata.zip ./../embed-peertube-wp
+zip -r v2_embed-peertube-wp_v1.8.1_metadata.zip ./embed-peertube-wp
 
 ### PS: it only works with public channels and playlists.
-
-**Contributors:** fairkom / biowilli  
-**Donate link:** [https://www.fairkom.eu/](https://www.fairkom.eu/)  
-**Tags:** channel, playlist, peertube, video, grid, slider, list, peertube playlist, playlist peertube, peertube plugin, video playlist, peertube player, peertube integration, peertube api, player video, video integration, peertube embed, channels embed  
-**Requires at least:** 3.5  
-**Tested up to:** 6.1  
-**Requires PHP:** 5.6  
-**Stable tag:** 2.0.0  
-**License:** GPLv3 or later  
-**License URI:** [http://www.gnu.org/licenses/gpl-2.0.html](http://www.gnu.org/licenses/gpl-2.0.html)
