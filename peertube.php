@@ -1,5 +1,17 @@
 <?php
 
+/*
+Plugin Name: Embed-Peertube-Wp
+Plugin URI: 
+Version: 2.00
+Description: Display Peertube Playlists and Channels in WP
+Author: Monz Philipp
+Author URI: https://www.fairkom.com/en/shop
+Network: false
+Text Domain: embed-peertube-wp
+Domain Path: 
+*/
+
 // Register activation and deactivation hooks for the plugin
 register_activation_hook(__FILE__, "add_peertube_install");
 register_uninstall_hook(__FILE__, "remove_peertube_desinstall");
