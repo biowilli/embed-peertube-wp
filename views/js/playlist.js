@@ -1,4 +1,4 @@
-console.log(222);
+
 const gridItems = document.querySelectorAll(".grid_item");
 const gridItem2s = document.querySelectorAll(".grid_item_2");
 window.transitioningOfMetadata = false;
