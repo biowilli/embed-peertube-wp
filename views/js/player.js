@@ -116,7 +116,7 @@ function updateDescription(targetDescription) {
 async function fetchCreatorRoleInfo(id) {
   var peertubeUrl = window.peertubePlaylistData.peertubeUrl;
   const response = await fetch(
-    `${peertubeUrl}/plugins/metadata/1.8.1/router/creator/${id}`
+    `${peertubeUrl}/plugins/metadata/1.8.4/router/creator/${id}`
   );
   const data = await response.json();
   return data;
@@ -124,7 +124,7 @@ async function fetchCreatorRoleInfo(id) {
 async function fetchOrganizationRoleInfo(id) {
   var peertubeUrl = window.peertubePlaylistData.peertubeUrl;
   const response = await fetch(
-    `${peertubeUrl}/plugins/metadata/1.8.1/router/organization/${id}`
+    `${peertubeUrl}/plugins/metadata/1.8.4/router/organization/${id}`
   );
   const data = await response.json();
   return data;
@@ -171,7 +171,7 @@ function updateMetadata(targetUuid) {
   var metadataContainer = document.getElementById("description_container");
   metadataContainer.innerHTML = "";
   var peertubeUrl = window.peertubePlaylistData.peertubeUrl;
-  fetch(`${peertubeUrl}/plugins/metadata/1.8.1/router/metadata/${targetUuid}`)
+  fetch(`${peertubeUrl}/plugins/metadata/1.8.4/router/metadata/${targetUuid}`)
     .then((response) => {
       if (!response.ok) {
         console.log("fetch not successfull");
