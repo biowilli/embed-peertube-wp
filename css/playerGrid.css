@@ -151,6 +151,8 @@
   flex-direction: row;
   justify-content: flex-start;
   align-items: start;
+  text-align: left;
+  hyphens: none;
 }
 
 .blx__title__content {
@@ -165,6 +167,8 @@
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  text-align: left;
+  hyphens: none;
 }
 
 .blx__text__content {

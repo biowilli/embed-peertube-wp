@@ -3,7 +3,7 @@
 /*
 Plugin Name: Embed-Peertube-Wp
 Plugin URI: 
-Version: 2.00
+Version: 2.0.1
 Description: Display Peertube Playlists and Channels in WP
 Author: Monz Philipp
 Author URI: https://www.fairkom.com/en/shop
