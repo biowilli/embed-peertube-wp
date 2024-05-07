@@ -3,7 +3,7 @@
 /*
 Plugin Name: Embed-Peertube-Wp
 Plugin URI: 
-Version: 2.0.2
+Version: 2.0.3
 Description: Display Peertube Playlists and Channels in WP
 Author: Monz Philipp
 Author URI: https://www.fairkom.com/en/shop
@@ -163,6 +163,7 @@ function playlist_peertube_css()
 function register_playlist_peertube_settings()
 {
     add_option("pl_peertube_url", "https://fair.tube");
+    add_option("pl_peertube_plugin_version", "1.8.6");
     add_option('pl_autoplay', 1);
     add_option('pl_description_textcolor', '#FFFFFF');
     add_option('pl_showmore_textcolor', '#FFFFFF');
@@ -207,7 +208,7 @@ function display_peertube_settings()
         check_admin_referer("pl_peertube_settings");
         $url = sanitize_text_field(rtrim($_POST["pl_peertube_url"], "/"));
         update_option("pl_peertube_url", $url);
-
+        update_option("pl_peertube_plugin_version", sanitize_text_field($_POST['pl_peertube_plugin_version']));
         update_option('pl_autoplay', absint($_POST['pl_autoplay']));
         update_option('pl_showmore_textcolor', sanitize_text_field($_POST['pl_showmore_textcolor']));
         update_option('pl_description_textcolor', sanitize_text_field($_POST['pl_description_textcolor']));
@@ -828,6 +829,14 @@ add_action("wp_enqueue_scripts", function () {
     wp_enqueue_script("jquery");
 
     wp_enqueue_script('peertube-player-script', 'https://unpkg.com/@peertube/embed-api/build/player.min.js', array(), null, true);
+    $peertube_plugin_version = get_option("pl_peertube_plugin_version");
+    echo $peertube_plugin_version;
+
+    echo '<script>';
+
+    echo 'window.peertubePluginVersion = ' . json_encode($peertube_plugin_version) . ';';
+    echo 'console.log("Peertube plugin version for metadata fetching", window.peertubePluginVersion);';
+    echo '</script>';
     wp_enqueue_script('peertube-player-script-local', plugin_dir_url(__FILE__) . 'views/js/player.js', array(), null, true);
     wp_enqueue_script('peertube-playlist-script-local', plugin_dir_url(__FILE__) . 'views/js/playlist.js', array(), null, true);
 });

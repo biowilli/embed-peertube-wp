@@ -11,6 +11,14 @@
             </td>
         </tr>
     </table>
+    <h3>Peertube Plugin Verion</h3>
+    <table class="form-table">
+        <tr valign="top">
+            <th scope="row">Peertube Plugin version:</th>
+            <td><input type="text" name="pl_peertube_plugin_version" value="<?php echo esc_attr( get_option('pl_peertube_plugin_version') ); ?>" required />
+            </td>
+        </tr>
+    </table>
     <h3>Player</h3>
     <table class="form-table">
     <tr valign="top">
