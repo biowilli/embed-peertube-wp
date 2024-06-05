@@ -277,10 +277,13 @@ function updateMetadata(targetUuid) {
                           if (!info[0]) {
                             return "";
                           }
-
                           const name = info[0].name || "";
                           const familyname = info[0].familyname || "";
-                          return name + familyname;
+                          var fullname = name + familyname;
+                          if (name != "" && familyname != "") {
+                            fullname = name + " " + familyname;
+                          }
+                          return fullname;
                         })
                         .join(", ")
                     : "";
