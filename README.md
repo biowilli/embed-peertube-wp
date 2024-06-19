@@ -23,36 +23,39 @@ Embed Peertube playlists and livestreams on wordpress.
 
    ![Settings](docs/assets/settings.png)
 
+
 4. Update the Instance.
 
    ![Update Instance](docs/assets/instance.png)
 
-5. Save the settings.
+5. Update the peertube plugin version. You can see that in peertube plugin page ('/admin/plugins/list-installed?pluginType=1')
+
+6. Save the settings.
 
    ![Save Instance Settings](docs/assets/save.png)
 
-6. Go to the 'channels' or 'playlists' submenu.
+7. Go to the 'channels' or 'playlists' submenu.
 
    ![Playlists](docs/assets/playlists.png)
 
-7. Create a shortcode by saving the ID number from the playlist and create an element.
+8. Create a shortcode by saving the ID number from the playlist and create an element.
 
    ![Share](docs/assets/share.png)
 
-8. You can find the ID in the playlist, then share it. In the example, it is this number: c5Rx7fX02wf4ssEaRJMJYb.
+9. You can find the ID in the playlist, then share it. In the example, it is this number: c5Rx7fX02wf4ssEaRJMJYb.
 
    ![Share](docs/assets/shareID.png)
 
-9. Add the Playlist or Livestream ID and add it.
+10. Add the Playlist or Livestream ID and add it.
 
    ![addPlaylistId](docs/assets/addPlaylistId.png)
 
-10. Copy the shortcode.
+11. Copy the shortcode.
 
     ![copyShortcode](docs/assets/copyShortcode.png)
 
-11. Go to the page where you wish to add the 'channel' or 'playlist'.
-12. Add the shortcode.
+12. Go to the page where you wish to add the 'channel' or 'playlist'.
+13. Add the shortcode.
 
 ## Deployment
 
