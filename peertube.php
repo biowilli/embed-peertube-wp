@@ -830,8 +830,6 @@ add_action("wp_enqueue_scripts", function () {
 
     wp_enqueue_script('peertube-player-script', 'https://unpkg.com/@peertube/embed-api/build/player.min.js', array(), null, true);
     $peertube_plugin_version = get_option("pl_peertube_plugin_version");
-    echo $peertube_plugin_version;
-
     echo '<script>';
 
     echo 'window.peertubePluginVersion = ' . json_encode($peertube_plugin_version) . ';';
